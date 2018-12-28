@@ -1,0 +1,192 @@
+@charset "UTF-8";
+body {}
+
+.calendar-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    display: flex;
+    padding: 16px;
+}
+
+.calendar-fields {
+    flex: 1;
+}
+
+.calendar-data {
+    border-left: 1px solid #ddd;
+    max-width: 250px;
+    padding: 0 16px;
+
+    b {
+        display: block;
+    }
+}
+
+.calendar-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+
+    .calendar-row {
+        margin-bottom: 0;
+    }
+
+    &-column {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    
+    &-days {
+        display: flex;
+        flex-wrap: wrap;
+
+        .heading {
+            width: 100%;
+        }
+    }
+
+    &-item {
+        padding-right: 16px;
+    }
+}
+
+.day {
+    margin-right: 8px;
+    position: relative;
+    user-select: none;
+    transition: 0.2s ease-in-out;
+
+    &-box {
+        align-items: center;
+        border: 1px solid #F1F5F8;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        height: 44px;
+        justify-content: center;
+        position: relative;
+        width: 44px;
+
+        &:before {
+            background: #F1F5F8;
+            border-radius: 50%;
+            content: '';
+            height: 100%;
+            left: 0;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        &:hover {
+            background: #eee;
+        }
+    }
+
+    input[type=checkbox] {
+        visibility: hidden;
+        position: absolute;
+
+        &:checked + .day-box {
+            background: #F1F5F8;
+        }
+
+        &:checked + .day-box:before {
+            animation: ripple 1s ease-out;
+        }
+    }
+}
+
+.exceptions-list {
+    background: #F1F5F8;
+    margin-top: 8px;
+    min-width: 300px;
+
+    li {
+        align-items: center;
+        display: flex;
+        border-bottom: 1px solid #fff;
+        height: 44px;
+        padding: 0 16px;
+
+        [data-icon] {
+            align-items: center;
+            background: #E7EEF3;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            height: 25px;
+            justify-content: center;
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+.ghost {
+    align-items: center;
+    display: flex;
+
+    &-input {
+        border: 1px solid #E7EEF3;
+        border-radius: 2px;
+        margin-left: 8px;
+        padding: 8px;
+    }
+}
+
+.u-alignStart {
+    align-items: flex-start;
+}
+
+.u-border {
+    border: 1px solid #ddd;
+}
+
+.u-borderRight {
+    border-right: 1px solid #ddd;
+}
+
+.u-marginRight {
+    margin-right: 16px;
+}
+
+.u-row {
+    display: flex;
+
+    > .heading {
+        margin-right: 8px;
+    }
+}
+
+.u-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.u-bold {
+    position: relative;
+    font-weight: bold;
+    color: #576575;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(1.5, 1.5);
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3, 3);
+  }
+}

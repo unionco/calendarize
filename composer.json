@@ -1,0 +1,40 @@
+{
+    "name": "unionco/calendarize",
+    "description": "Calendar element types",
+    "type": "craft-plugin",
+    "version": "1.0.2",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "calendarize"
+    ],
+    "support": {
+        "docs": "???",
+        "issues": "???"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Franco Valdes",
+            "homepage": "https://union.co"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1",
+        "rlanvin/php-rrule": "~1.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "unionco\\calendarize\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Calendarize",
+        "handle": "calendarize",
+        "hasCpSettings": false,
+        "changelogUrl": "???",
+        "class": "unionco\\calendarize\\Calendarize"
+    }
+}

@@ -1,0 +1,225 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Calendarize plugin for Craft CMS 3.x
+ *
+ * CalendarizeField Field Input
+ *
+ * @author    Franco Valdes
+ * @copyright Copyright (c) 2018 Franco Valdes
+ * @link      https://union.co
+ * @package   Calendarize
+ * @since     1.0.0
+ */
+#}
+
+{% import "calendarize/_includes/forms" as forms %}
+
+{% set daysOfWeek = [
+    { value: 0, label: 'Sun' },
+    { value: 1, label: 'Mon' },
+    { value: 2, label: 'Tue' },
+    { value: 3, label: 'Wed' },
+    { value: 4, label: 'Thu' },
+    { value: 5, label: 'Fri' },
+    { value: 6, label: 'Sat' },
+] %}
+
+{% set endOptions = [
+    { value: 'never', label: 'Never' },
+    { value: 'date', label: 'On Date' }
+] %}
+
+{% set repeatOptions = [
+    { value: 'daily', label: 'Daily' },
+    { value: 'weekly', label: 'Weekly' },
+    { value: 'monthly', label: 'Monthly' }
+] %}
+
+<div class="calendar-wrapper">
+    <div class="calendar-fields">
+        <div class="calendar-row">
+            <div class="calendar-row-item">
+                {{ 
+                    forms.lightswitchField({
+                        label: 'All Day',
+                        id: name ~ 'AllDay',
+                        name: name ~ '[allDay]',
+                        value: ( value.allDay ?? false ),
+                        on: ( value.allDay ?? false ),
+                        layout: 'row'
+                    })
+                }}
+            </div>
+            <div class="calendar-row-item">
+                {{ 
+                    forms.dateTimeField({
+                        id: name ~ 'StartDate',
+                        name: name ~ '[startDate]',
+                        value: ( value is not null and value.startDate ? value.startDate : now ),
+                        parent: name
+                    })
+                }}
+            </div>
+            <div class="calendar-row-item">
+                <span class="label u-bold">to</span>
+            </div>
+            <div class="calendar-row-item">
+                {{ 
+                    forms.dateTimeField({
+                        id: name ~ 'EndDate',
+                        name: name ~ '[endDate]',
+                        value: ( value is not null and value.endDate ? value.endDate : now ),
+                        parent: name
+                    })
+                }}
+            </div>
+        </div>
+        <div class="calendar-row u-alignStart">
+            <div class="calendar-row-item">
+                {{ 
+                    forms.lightswitchField({
+                        label: 'Repeats',
+                        id: name ~ 'Repeats',
+                        name: name ~ '[repeats]',
+                        value: ( value.repeats ?? false ),
+                        on: ( value.repeats ?? false )
+                    })
+                }}
+            </div>
+
+            <div class="calendar-row-item" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+                {{ 
+                    forms.selectField({
+                        id: name ~ 'RepeatType',
+                        label: 'Every',
+                        name: name ~ '[repeatType]',
+                        value: ( value.repeatType ?? false ),
+                        options: repeatOptions
+                    })
+                }}
+            </div>
+        </div>
+
+        <div class="calendar-row u-alignStart" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+            <div class="calendar-row-item">
+                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="weekly">
+                    {% for day in daysOfWeek %}
+                        {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
+                        {% set labelId = 'label'~random() %}
+                        {% set selected = false %}
+
+                        {% if value is not null and value.days | length %}
+                            {% if day.value in value.days | keys %}
+                                {% set selected = true %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        <div class="day" id="fields-calendarDays-field">
+                            <label for="{{labelId}}">
+                                <input type="checkbox" id="{{labelId}}" name="{{ fieldName }}" {% if selected -%}checked{%- endif %}/>
+                                <div class="day-box">
+                                    {{ day.label }}
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="monthly" data-monthly-select="fields[{{ name }}][startDate][date]">
+                    {% set opts = [
+                        { value: 'onDay', label: value.startDate ? value.startDate.format('jS') },
+                        { value: 'onMonthDay', label: craft.calendarize.weekMonthText(value.startDate ?? now) }
+                    ] %}
+                    {{ 
+                        forms.selectField({
+                            id: name ~ 'Months',
+                            label: 'Every month on the',
+                            name: name ~ '[months]',
+                            value: ( value.months ?? false ),
+                            options: opts
+                        })
+                    }}
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-row" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+            <div class="field">
+                <div class="heading">
+                    <label>Ends Repeat</label>
+                </div>
+
+                <div class="calendar-row">
+                    <div class="calendar-row-item">
+                        {{ 
+                            forms.selectField({
+                                id: name ~ 'EndRepeat',
+                                name: name ~ '[endRepeat]',
+                                value: ( value.endRepeat ?? false ),
+                                options: endOptions
+                            })
+                        }}
+                    </div>
+                    <div class="calendar-row-item" data-if="fields[{{ name }}][endRepeat]" data-if-value="date">
+                        {{ 
+                            forms.dateField({
+                                id: name ~ 'EndRepeatDate',
+                                name: name ~ '[endRepeatDate]',
+                                value: ( value is not null and value.endRepeatDate ? value.endRepeatDate : now ),
+                            })
+                        }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-row calendar-row-column" data-exceptions="fields[{{ name }}][exceptions][][date]" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+            <div class="calendar-row-item">
+                {{ 
+                    forms.dateField({
+                        label: 'Exceptions',
+                        id: name ~ 'Exceptions',
+                        value: null
+                    })
+                }}
+            </div>
+            <div class="calendar-row-item">
+                <ul class="exceptions-list">
+                    {% if value.exceptions is defined %}
+                        {% for key, exception in value.exceptions %}
+                            <li>
+                                <div data-icon="remove"></div><p>{{ exception | date('l, m/d/Y') }}</p>
+                                <input type="hidden" name="{{name}}[exceptions][{{key}}][date]" value="{{ exception | date('m/d/Y') }}" />
+                                <input type="hidden" name="{{name}}[exceptions][{{key}}][timezone]" value="{{ craft.app.getTimeZone() }}">
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if value is defined and value.startDate %}
+        <div class="calendar-data">
+            <p>
+                {% if value.hasPassed %}Date:{% else %}Next Occurence:{% endif %} 
+                {% if value.allDay %}
+                    <b>{{ value.next.format('m/d/Y') }}</b>
+                {% else %}
+                    <b>{{ value.next.format('m/d/Y @ h:i:s a') }}</b>
+                {% endif %}
+            </p>
+            {% if value.repeats %}
+                <ul>
+                    <li>Occurences:</li>
+                {% for occurence in value.rrule.getOccurrences(10) %}
+                    <li>{{ occurence.format('m/d/Y @ h:i:s a') }}</li>
+                {% endfor %}
+                {% if value.rrule.getOccurrences | length > 10 %}
+                    <li>...</li>
+                {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

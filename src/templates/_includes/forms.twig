@@ -1,0 +1,49 @@
+{% macro field(config, input) %}
+    {% include "calendarize/_includes/forms/field" with config|merge({ input: input }) only %}
+{% endmacro %}
+
+{% macro date(config) %}
+    {% include "calendarize/_includes/forms/date" with config only %}
+{% endmacro %}
+
+{% macro time(config) %}
+    {% include "calendarize/_includes/forms/time" with config only %}
+{% endmacro %}
+
+{% macro lightswitch(config) %}
+    {% include "calendarize/_includes/forms/lightswitch" with config only %}
+{% endmacro %}
+
+{% macro select(config) %}
+    {% include "calendarize/_includes/forms/select" with config only %}
+{% endmacro %}
+
+{% macro dateField(config) %}
+    {% import _self as forms %}
+    {{ forms.field(config, forms.date(config)) }}
+{% endmacro %}
+
+{% macro dateTimeField(config) %}
+    {% import _self as forms %}
+    {% set input %}
+        <div class="datetimewrapper">
+            {{ forms.date(config) }}
+            {{ forms.time(config) }}
+        </div>
+    {% endset %}
+    {{ forms.field(config, input) }}
+{% endmacro %}
+
+{% macro lightswitchField(config) %}
+    {% import _self as forms %}
+    {% if config.labelId is not defined or not config.labelId %}
+        {% set config = config|merge({ labelId: 'label'~random() }) %}
+    {% endif %}
+    {% set config = config|merge({ fieldClass: 'lightswitch-field ' ~ (config.fieldClass ?? '') }) %}
+    {{ forms.field(config, forms.lightswitch(config)) }}
+{% endmacro %}
+
+{% macro selectField(config) %}
+    {% import _self as forms %}
+    {{ forms.field(config, forms.select(config)) }}
+{% endmacro %}
