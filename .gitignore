@@ -1,4 +1,5 @@
 # CRAFT ENVIRONMENT
+# .vscode
 .env.php
 .env.sh
 .env
