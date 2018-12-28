@@ -1,6 +1,6 @@
 # Calendarize Field Type plugin for Craft CMS 3.x
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/calendarize.png)
 
 ## Requirements
 
