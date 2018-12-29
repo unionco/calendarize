@@ -161,6 +161,42 @@ class CalendarizeModel extends Model
     /**
      * 
      */
+    public function getOccurences($limit = 10)
+    {
+        if (empty($this->startDate) && empty($this->endDate)) {
+            return [];
+        }
+
+        $occurences = $this->rrule()->getOccurrences($limit);
+
+        return $occurences;
+    }
+
+    /**
+     * 
+     */
+    public function getOccurrencesBetween($startDate, $endDate = null, $limit = 1)
+    {
+        if (empty($this->startDate) && empty($this->endDate)) {
+            return [];
+        }
+
+        if (is_string($startDate)) {
+            $startDate = DateTimeHelper::toDateTime(new DateTime($startDate, new DateTimeZone(Craft::$app->getTimeZone())));
+        }
+
+        if (isset($endDate) && is_string($endDate)) {
+            $endDate = DateTimeHelper::toDateTime(new DateTime($endDate, new DateTimeZone(Craft::$app->getTimeZone())));
+        }
+
+        $occurences = $this->rrule()->getOccurrencesBetween($startDate, $endDate, $limit);
+
+        return $occurences;
+    }
+
+    /**
+     * 
+     */
     public function hasPassed()
     {
         if (empty($this->startDate) && empty($this->endDate)) {

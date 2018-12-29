@@ -212,12 +212,12 @@
             {% if value.repeats %}
                 <ul>
                     <li>Occurences:</li>
-                {% for occurence in value.rrule.getOccurrences(10) %}
-                    <li>{{ occurence.format('m/d/Y @ h:i:s a') }}</li>
-                {% endfor %}
-                {% if value.rrule.getOccurrences | length > 10 %}
-                    <li>...</li>
-                {% endif %}
+                    {% for occurence in value.getOccurences(10) %}
+                        <li>{{ occurence.format('m/d/Y @ h:i:s a') }}</li>
+                    {% endfor %}
+                    {% if value.rrule.getOccurrences | length > 10 %}
+                        <li>...</li>
+                    {% endif %}
                 </ul>
             {% endif %}
         </div>
