@@ -2,7 +2,7 @@
     "name": "unionco/calendarize",
     "description": "Calendar element types",
     "type": "craft-plugin",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "keywords": [
         "craft",
         "cms",
@@ -11,8 +11,8 @@
         "calendarize"
     ],
     "support": {
-        "docs": "???",
-        "issues": "???"
+        "docs": "https://github.com/unionco/calendarize",
+        "issues": "https://github.com/unionco/calendarize/issues"
     },
     "license": "MIT",
     "authors": [
