@@ -12,7 +12,7 @@
     ],
     "support": {
         "docs": "https://github.com/unionco/calendarize",
-        "issues": "https://github.com/unionco/calendarize/issues"
+        "issues": "https://github.com/unionco/calendarize/issues?state=open"
     },
     "license": "MIT",
     "authors": [
@@ -34,7 +34,7 @@
         "name": "Calendarize",
         "handle": "calendarize",
         "hasCpSettings": false,
-        "changelogUrl": "???",
+        "changelogUrl": "https://github.com/unionco/calendarize/commits/master",
         "class": "unionco\\calendarize\\Calendarize"
     }
 }
