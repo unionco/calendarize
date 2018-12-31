@@ -168,6 +168,10 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
      */
     public function getTableAttributeHtml($value, ElementInterface $element): string
     {
+        if (empty($value->startDate) && empty($value->endDate)) {
+            return '-';
+        }
+        
         $hr = $value->rrule()->getRRules()[0]->humanReadable();
         $html = "<span title=\"{$hr}\">";
         
