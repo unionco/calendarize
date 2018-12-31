@@ -40,6 +40,7 @@ class Install extends Migration
 				'endRepeat' => $this->string(255),
 				'endRepeatDate' => $this->dateTime()->notNull(),
 				'exceptions' => $this->text(),
+				'timeChanges' => $this->text(),
 				'repeatType' => $this->string(255),
 
 				'dateCreated' => $this->dateTime()->notNull(),
