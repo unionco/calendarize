@@ -112,11 +112,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     public function rules()
     {
         $rules = parent::rules();
-		$rules = array_merge($rules, [
-            ['startDate', 'endDate'],
-            'required',
-        ]);
-        
+
         return $rules;
     }
 
