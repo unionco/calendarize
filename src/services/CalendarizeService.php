@@ -286,6 +286,12 @@ class CalendarizeService extends Component
             $record->exceptions = Json::encode(array_map(function ($exception) use($value) {
                 return Db::prepareDateForDb($exception);
             }, $value->exceptions ?? []));
+		}
+		
+		if (isset($value->timeChanges)) {
+            $record->timeChanges = Json::encode(array_map(function ($timeChange) use($value) {
+                return Db::prepareDateForDb($timeChange);
+            }, $value->timeChanges ?? []));
         }
 
 		$save = $record->save();

@@ -35,27 +35,27 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     // =========================================================================
 
     /**
-     * @var string
+     * @var datetime
      */
     public $startDate;
 
     /**
-     * @var string
+     * @var datetime
      */
     public $endDate;
 
     /**
-     * @var string
+     * @var boolean
      */
     public $repeats = false;
 
     /**
-     * @var string
+     * @var boolean
      */
     public $allDay = false;
     
     /**
-     * @var string
+     * @var array
      */
     public $days = [];
 
@@ -65,14 +65,19 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     public $endRepeat = 'never';
 
     /**
-     * @var string
+     * @var datetime
      */
     public $endRepeatDate;
 
     /**
-     * @var string
+     * @var array
      */
     public $exceptions = [];
+
+    /**
+     * @var array
+     */
+    public $timeChanges = [];
 
     /**
      * @var string

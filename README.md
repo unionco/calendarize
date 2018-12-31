@@ -34,6 +34,7 @@ Configuration is as follows:
 8. Repeat Ends - Dropdown [Never, On Date]
 9. Repeat End Date - Datetime field
 10. Exceptions - Date fields Repeater (custom)
+10. Time Changes - Datetime fields Repeater (custom)
 
 ![Screenshot](resources/img/field-layout.png)
 
@@ -59,7 +60,20 @@ In your twig templates you can access the calendarize field as you would with an
         {{ event.calendatizeHandle.getOccurences(limit) }}
         {{ event.calendatizeHandle.getOccurrencesBetween(start, end, limit) }}
 
-This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurences` method returns all occurences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
+4. Added Query functionality through craft variables
+    - This queries entries with calendarize fields with upcoming occurences. Can take any normal criteria. Returns array of entries.
+
+            {% set entries = craft.calendarize.upcoming({ section: ['events'] }) %}
+    
+    - This queres entries with calendarize fields with occurences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
+    
+            {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }) %}
+
+### Dependencies 
+
+- RRULE
+    This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurences` method returns all occurences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
+
 
 ## Calendarize Roadmap
 

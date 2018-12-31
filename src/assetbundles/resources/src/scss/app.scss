@@ -99,6 +99,19 @@ body {}
     }
 }
 
+.datetimewrapper {
+    display: flex;
+    margin-bottom: 8px;
+
+    .datewrapper {
+        margin-right: 8px;
+    }
+
+    .timewrapper + .btn {
+        margin-left: 8px;
+    }
+}
+
 .exceptions-list {
     background: #F1F5F8;
     margin-top: 8px;

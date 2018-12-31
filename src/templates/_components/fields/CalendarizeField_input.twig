@@ -177,7 +177,7 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.dateField({
-                        label: 'Exceptions',
+                        label: 'Date Exceptions',
                         id: name ~ 'Exceptions',
                         value: null
                     })
@@ -191,6 +191,33 @@
                                 <div data-icon="remove"></div><p>{{ exception | date('l, m/d/Y') }}</p>
                                 <input type="hidden" name="{{name}}[exceptions][{{key}}][date]" value="{{ exception | date('m/d/Y') }}" />
                                 <input type="hidden" name="{{name}}[exceptions][{{key}}][timezone]" value="{{ craft.app.getTimeZone() }}">
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="calendar-row calendar-row-column" data-time-exceptions="fields[{{ name }}][timeChanges][][date]" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+            <div class="calendar-row-item">
+                {{ 
+                    forms.dateTimeField({
+                        label: 'Time Exceptions',
+                        id: name ~ 'TimeChanges',
+                        value: null,
+                        timeException: true
+                    })
+                }}
+            </div>
+            <div class="calendar-row-item">
+                <ul class="exceptions-list">
+                    {% if value.timeChanges is defined %}
+                        {% for key, change in value.timeChanges %}
+                            <li>
+                                <div data-icon="remove"></div><p>{{ change | date('l, m/d/Y h:i a') }}</p>
+                                <input type="hidden" name="{{name}}[timeChanges][{{key}}][date]" value="{{ change | date('m/d/Y') }}" />
+                                <input type="hidden" name="{{name}}[timeChanges][{{key}}][time]" value="{{ change | date('h:i A') }}" />
+                                <input type="hidden" name="{{name}}[timeChanges][{{key}}][timezone]" value="{{ craft.app.getTimeZone() }}">
                             </li>
                         {% endfor %}
                     {% endif %}

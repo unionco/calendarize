@@ -44,6 +44,7 @@ class CalendarizeModel extends Model
     public $endRepeat = 'never';
     public $endRepeatDate;
     public $exceptions = [];
+    public $timeChanges = [];
     public $repeatType = 'week';
     public $months = null;
 
@@ -79,7 +80,13 @@ class CalendarizeModel extends Model
                         $value = is_string($value) ? Json::decode($value) : $value;
                         $this->{$key} = array_map(function ($e) {
                             return DateTimeHelper::toDateTime($e);
-                        }, $value);
+                        }, $value ?? []);
+                        break;
+                    case 'timeChanges':
+                        $value = is_string($value) ? Json::decode($value) : $value;
+                        $this->{$key} = array_map(function ($e) {
+                            return DateTimeHelper::toDateTime($e);
+                        }, $value ?? []);
                         break;
                     case 'days':
                         $this->{$key} = is_string($value) ? Json::decode($value) : $value;
@@ -140,6 +147,9 @@ class CalendarizeModel extends Model
             }
 
             $occurences = $this->rrule()->getOccurrencesBetween($today, null, 1);
+
+            $this->_adjustTimeChanges($occurences);
+
             if (count($occurences)) {
                 $nextOffer = $occurences[0];
 
@@ -149,7 +159,6 @@ class CalendarizeModel extends Model
                     }
                 }
 
-                $nextOffer->setTime($this->startDate->format('H'), $this->startDate->format('i'));
                 return $nextOffer;
             }
             
@@ -168,7 +177,9 @@ class CalendarizeModel extends Model
         }
 
         $occurences = $this->rrule()->getOccurrences($limit);
-
+        
+        $this->_adjustTimeChanges($occurences);
+        
         return $occurences;
     }
 
@@ -190,6 +201,8 @@ class CalendarizeModel extends Model
         }
 
         $occurences = $this->rrule()->getOccurrencesBetween($startDate, $endDate, $limit);
+
+        $this->_adjustTimeChanges($occurences);
 
         return $occurences;
     }
@@ -268,5 +281,41 @@ class CalendarizeModel extends Model
     public function rules()
     {
         parent::rules();
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * 
+     */
+    private function _adjustTimeChanges(&$occurences = [])
+    {
+        // set the start time to all occurences
+        $this->_adjustTimes($occurences);
+
+        // change out times if changes exists
+        if (isset($this->timeChanges) && count($this->timeChanges)) {
+            foreach ($occurences as $key => $occurence) {
+                // find in occurences
+                $change = array_filter($this->timeChanges, function ($change) use ($occurence) {
+                    return $change->format('Y-m-d') === $occurence->format('Y-m-d');
+                });
+                if ($change) {
+                    $occurences[$key] = array_shift($change);
+                }
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    private function _adjustTimes(&$occurences = [])
+    {
+        // change out times
+        foreach ($occurences as $key => $occurence) {
+            $occurences[$key]->setTime($this->startDate->format('H'), $this->startDate->format('i'));
+        }
     }
 }

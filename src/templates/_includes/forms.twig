@@ -26,9 +26,12 @@
 {% macro dateTimeField(config) %}
     {% import _self as forms %}
     {% set input %}
-        <div class="datetimewrapper">
+        <div class="datetimewrapper u-flex">
             {{ forms.date(config) }}
             {{ forms.time(config) }}
+            {% if config.timeException is defined %}
+                <div data-trigger class="btn submit add icon" tabindex="0"></div>
+            {% endif %}
         </div>
     {% endset %}
     {{ forms.field(config, input) }}

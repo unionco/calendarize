@@ -119,13 +119,74 @@ window.onload = () => {
         });
     });
 
+    document.querySelectorAll('[data-time-exceptions]').forEach((node) => {
+        const dateField = node.querySelector('.hasDatepicker');
+        const timeField = node.querySelector('.ui-timepicker-input');
+        const trigger = node.querySelector('[data-trigger]');
+        const hiddenName = node.getAttribute('data-time-exceptions');
+        const listing = node.querySelector('.exceptions-list');
+        const listingItems = listing.querySelectorAll('li');
+
+        const removeChild = (item, child) => {            
+            item.removeChild(child);
+        };
+
+        if (listingItems.length) {
+            listingItems.forEach((item) => {
+                const close = item.querySelector('[data-icon]');
+                close.addEventListener('click', () => {
+                    removeChild(listing, item);
+                })
+            })
+        }
+
+        trigger.addEventListener('click', (e) => {
+            const newValue = dateField.value;
+            const newTimeValue = timeField.value;
+            const li = document.createElement('li');
+            const close = document.createElement('div');
+            const p = document.createElement('p');
+            const hidden = document.createElement('input');
+            const hiddenTime = document.createElement('input');
+            const timezone = document.createElement('input');
+            const length = listing.querySelectorAll('li').length;
+
+            hidden.setAttribute('type', 'hidden');
+            hidden.setAttribute('name', hiddenName.replace('[]', `[${length || 0}]`));
+            hidden.value = newValue;
+
+            hiddenTime.setAttribute('type', 'hidden');
+            hiddenTime.setAttribute('name', hiddenName.replace('[]', `[${length || 0}]`).replace('date', 'time'));
+            hiddenTime.value = newTimeValue;
+
+            timezone.setAttribute('type', 'hidden');
+            timezone.setAttribute('name', hiddenName.replace('[]', `[${length || 0}]`).replace('date', 'timezone'));
+            timezone.value = Craft.timezone;
+
+            close.setAttribute('data-icon', 'remove');
+            close.addEventListener('click', () => {
+                removeChild(listing, li);
+            })
+
+            p.innerHTML = getDayName(newValue) + ', ' + newValue + ' ' + newTimeValue;
+            
+            li.appendChild(close);
+            li.appendChild(p);
+            li.appendChild(hidden);
+            li.appendChild(hiddenTime);
+            li.appendChild(timezone);
+
+            listing.appendChild(li);
+        })
+    });
+
     document.querySelectorAll('[data-exceptions]').forEach((node) => {
         const dateField = node.querySelector('.hasDatepicker');
         const hiddenName = node.getAttribute('data-exceptions');
         const listing = node.querySelector('.exceptions-list');
         const listingItems = listing.querySelectorAll('li');
 
-        const removeChild = (item, child) => {            
+        const removeChild = (item, child) => {
             item.removeChild(child);
         };
 
@@ -161,13 +222,16 @@ window.onload = () => {
             })
 
             p.innerHTML = getDayName(newValue) + ', ' + newValue;
-            
+
             li.appendChild(close);
             li.appendChild(p);
             li.appendChild(hidden);
             li.appendChild(timezone);
 
             listing.appendChild(li);
+
+            dateField.value = '';
+            timeField.value = '';
         })
     });
 };
