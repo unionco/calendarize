@@ -2,7 +2,7 @@
     "name": "unionco/calendarize",
     "description": "Calendar element types",
     "type": "craft-plugin",
-    "version": "1.0.10",
+    "version": "1.1.0",
     "keywords": [
         "craft",
         "cms",
@@ -33,7 +33,6 @@
     "extra": {
         "name": "Calendarize",
         "handle": "calendarize",
-        "hasCpSettings": false,
         "changelogUrl": "https://github.com/unionco/calendarize/commits/master",
         "class": "unionco\\calendarize\\Calendarize"
     }
