@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.1.4 - 2019-01-03
+### Update
+- Added `__toString` method to calendarize model. Returns the next occurence.
+- Added caching to upcoming and after queries as well as rrule occurence creator
+
 ## 1.1.3 - 2019-01-02
 ### Updated
 - Updating and refactored javascript

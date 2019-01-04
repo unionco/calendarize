@@ -32,6 +32,15 @@ use unionco\calendarize\records\CalendarizeRecord;
  */
 class CalendarizeService extends Component
 {
+	// Private Properties
+    // =========================================================================
+
+    /** @var CalendarModel[] */
+	private $entryCache = [];
+
+	/** @var CalendarModel[] */
+	private $fieldCache = [];
+	
     // Public Methods
     // =========================================================================
 
@@ -108,29 +117,35 @@ class CalendarizeService extends Component
 	public function upcoming($criteria = null)
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-		$records = CalendarizeRecord::find();
-		$records->where([
-			'or',
-			[
-				'and',
-				['=', 'endRepeat', 'date'],
-				['>=', 'endRepeatDate', Db::prepareDateForDb($today)],
-			],
-			['=', 'endRepeat', 'never'],
-		]);
-		
-		$entryIds = array_map(function ($record) {
-			return $record->ownerId;
-		}, $records->all());
-		
-		$entries = Entry::find()
-			->id(implode(",", $entryIds));
-		Craft::configure($entries, $criteria);
+		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
 
-		// order them
-		$entries = $this->sort($entries->all());
+		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
+			$records = CalendarizeRecord::find();
+			$records->where([
+				'or',
+				[
+					'and',
+					['=', 'endRepeat', 'date'],
+					['>=', 'endRepeatDate', Db::prepareDateForDb($today)],
+				],
+				['=', 'endRepeat', 'never'],
+			]);
+			
+			$entryIds = array_map(function ($record) {
+				return $record->ownerId;
+			}, $records->all());
+			
+			$entries = Entry::find()
+				->id(implode(",", $entryIds));
+			Craft::configure($entries, $criteria);
+
+			// order them
+			$entries = $this->sort($entries->all());
+
+			$this->entryCache[$cacheHash] = $entries;
+		}
 		
-		return $entries;
+		return $this->entryCache[$cacheHash];
 	}
 
 	/**
@@ -174,8 +189,7 @@ class CalendarizeService extends Component
     public function getField(CalendarizeField $field, ElementInterface $owner, $value)
     {
         /** @var Element $owner */
-
-        $record = CalendarizeRecord::findOne(
+		$record = CalendarizeRecord::findOne(
 			[
 				'ownerId'     => $owner->id,
 				'ownerSiteId' => $owner->siteId,

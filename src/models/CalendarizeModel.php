@@ -48,13 +48,13 @@ class CalendarizeModel extends Model
     public $repeatType = 'week';
     public $months = null;
 
-    static $RRULEMAP = [
+    static protected $RRULEMAP = [
         'daily' => 'DAILY',
         'weekly' => 'WEEKLY',
         'monthly' => 'MONTHLY'
     ];
 
-    static $RRULEDAYMAP = [
+    static protected $RRULEDAYMAP = [
         0 => "SU",
         1 => "MO",
         2 => "TU",
@@ -63,6 +63,12 @@ class CalendarizeModel extends Model
         5 => "FR",
         6 => "SA",
     ];
+
+    // Private Properties
+    // =========================================================================
+
+    /** @var CalendarModel[] */
+    private $occurenceCache;
 
     // Public Methods
     // =========================================================================
@@ -107,6 +113,16 @@ class CalendarizeModel extends Model
 	public function isValueEmpty($value, ElementInterface $element): bool
 	{
 	    return (empty($value->startDate) && empty($value->endDate));
+    }
+
+    /**
+     * Returns the calendar next occurence
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->next();
     }
 
     /**
@@ -234,45 +250,50 @@ class CalendarizeModel extends Model
      */
     public function rrule()
     {
-        $config = [
-            'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),
-            'INTERVAL'   => 1,
-            'DTSTART'    => $this->startDate,
-            'UNTIL'      => $this->endRepeat !== 'never' ? $this->endRepeatDate ?? $this->startDate : null
-        ];
-        
-        if ($this->endRepeat === 'never') {
-            $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-            $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+2 months'));
-        }
-
-        switch ($this->repeatType) {
-            case 'daily':
-                break;
-            case 'weekly':
-                $config['BYDAY'] = array_map(function ($day) {
-                    return static::$RRULEDAYMAP[$day];
-                }, array_keys($this->days ?? []));
-                break;
-            case 'monthly':
-                if ($this->months === 'onMonthDay') {
-                    $config['BYDAY'] = Calendarize::$plugin->calendar->weekOfMonth($this->startDate) . static::$RRULEDAYMAP[$this->startDate->format('w')];
-                }
-                break;
-        }
-        
-        $rset = new RSet();
-        $rset->addRRule($config);
-
-        if ($this->exceptions) {
-            foreach ($this->exceptions as $exception) {
-                $date = DateTimeHelper::toDateTime($exception);
-                $date->setTime($this->startDate->format('H'), $this->startDate->format('i'));
-                $rset->addExDate($date);
+        if (null === $this->occurenceCache) {
+            $config = [
+                'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),
+                'INTERVAL'   => 1,
+                'DTSTART'    => $this->startDate,
+                'UNTIL'      => $this->endRepeat !== 'never' ? $this->endRepeatDate ?? $this->startDate : null
+            ];
+            
+            if ($this->endRepeat === 'never') {
+                $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
+                $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+2 months'));
             }
-        }
 
-        return $rset;
+            switch ($this->repeatType) {
+                case 'daily':
+                    break;
+                case 'weekly':
+                    $config['BYDAY'] = array_map(function ($day) {
+                        return static::$RRULEDAYMAP[$day];
+                    }, array_keys($this->days ?? []));
+                    break;
+                case 'monthly':
+                    if ($this->months === 'onMonthDay') {
+                        $config['BYDAY'] = Calendarize::$plugin->calendar->weekOfMonth($this->startDate) . static::$RRULEDAYMAP[$this->startDate->format('w')];
+                    }
+                    break;
+            }
+            
+            $rset = new RSet();
+            $rset->addRRule($config);
+
+            if ($this->exceptions) {
+                foreach ($this->exceptions as $exception) {
+                    $date = DateTimeHelper::toDateTime($exception);
+                    $date->setTime($this->startDate->format('H'), $this->startDate->format('i'));
+                    $rset->addExDate($date);
+                }
+            }
+
+            // cache rset
+            $this->occurenceCache = $rset;
+        }
+        
+        return $this->occurenceCache;
     }
 
     /**
