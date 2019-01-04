@@ -1,5 +1,9 @@
 # Calendarize Changelog
 
+## 1.1.5 - 2019-01-03
+### Update
+- Fix changelog url
+
 ## 1.1.4 - 2019-01-03
 ### Update
 - Added `__toString` method to calendarize model. Returns the next occurence.
