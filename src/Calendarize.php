@@ -47,6 +47,9 @@ class Calendarize extends Plugin
      */
     public static $plugin;
 
+    // Public Properties
+    // =========================================================================
+    
     /**
      * @var boolean
      */
@@ -61,14 +64,6 @@ class Calendarize extends Plugin
      * @var string
      */
     public $changelogUrl = "https://raw.githubusercontent.com/unionco/calendarize/master/CHANGELOG.md";
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string
-     */
-    public $schemaVersion = '1.1.5';
 
     // Public Methods
     // =========================================================================
