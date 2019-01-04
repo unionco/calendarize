@@ -1,6 +1,6 @@
 {
     "name": "unionco/calendarize",
-    "description": "Calendar element types",
+    "description": "A calendar field type providing functionality for recurrence.",
     "type": "craft-plugin",
     "keywords": [
         "craft",
@@ -32,7 +32,8 @@
     "extra": {
         "name": "Calendarize",
         "handle": "calendarize",
-        "changelogUrl": "https://github.com/unionco/calendarize/commits/master",
+        "documentationUrl": "https://github.com/unionco/calendarize/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/unionco/calendarize/master/CHANGELOG.md",
         "class": "unionco\\calendarize\\Calendarize"
     }
 }
