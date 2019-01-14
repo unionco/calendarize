@@ -56,7 +56,7 @@
                     forms.dateTimeField({
                         id: name ~ 'StartDate',
                         name: name ~ '[startDate]',
-                        value: ( value is not null and value.startDate ? value.startDate : now ),
+                        value: ( value is not null and value.startDate ? value.startDate : null ),
                         parent: name
                     })
                 }}
@@ -69,7 +69,7 @@
                     forms.dateTimeField({
                         id: name ~ 'EndDate',
                         name: name ~ '[endDate]',
-                        value: ( value is not null and value.endDate ? value.endDate : now ),
+                        value: ( value is not null and value.endDate ? value.endDate : null ),
                         parent: name
                     })
                 }}
@@ -165,7 +165,7 @@
                             forms.dateField({
                                 id: name ~ 'EndRepeatDate',
                                 name: name ~ '[endRepeatDate]',
-                                value: ( value is not null and value.endRepeatDate ? value.endRepeatDate : now ),
+                                value: ( value is not null and value.endRepeatDate ? value.endRepeatDate : null ),
                             })
                         }}
                     </div>

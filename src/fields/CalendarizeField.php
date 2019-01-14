@@ -203,16 +203,6 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        // $jsonVars = [
-        //     'id' => $id,
-        //     'name' => $this->handle,
-        //     'namespace' => $namespacedId,
-        //     'prefix' => Craft::$app->getView()->namespaceInputId(''),
-        //     ];
-        // $jsonVars = Json::encode($jsonVars);
-        // Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').CalendarizeCalendarizeField(" . $jsonVars . ");");
-
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'calendarize/_components/fields/CalendarizeField_input',

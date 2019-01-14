@@ -122,7 +122,11 @@ class CalendarizeModel extends Model
      */
     public function __toString(): string
     {
-        return $this->next();
+        if ($next = $this->next()) {
+            return $next->format('m/d/Y h:i a');
+        }
+        
+        return '';
     }
 
     /**

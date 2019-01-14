@@ -1,5 +1,12 @@
 # Calendarize Changelog
 
+## 1.1.7 - 2019-01-14
+
+### Update
+
+- Updating database schema, fixing __toString method.
+
+
 ## 1.1.6 - 2019-01-03
 
 ### Update

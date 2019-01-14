@@ -65,6 +65,11 @@ class Calendarize extends Plugin
      */
     public $changelogUrl = "https://raw.githubusercontent.com/unionco/calendarize/master/CHANGELOG.md";
 
+    /**
+     * @var string
+     */
+    public $schemaVersion = '1.2.0';
+
     // Public Methods
     // =========================================================================
 
