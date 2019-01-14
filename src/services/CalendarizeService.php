@@ -49,6 +49,7 @@ class CalendarizeService extends Component
 	 */
 	public function weekMonthText($date): string 
 	{
+		if (!$date) return '';
 		$prefixes = ['First', 'Second', 'Third', 'Fourth', 'Last'];
 		return $prefixes[floor($date->format('j') / 7)] . ' ' . $date->format('l');
 	}
@@ -58,6 +59,7 @@ class CalendarizeService extends Component
      */
     public function weekOfMonth($date): string
     {
+		if (!$date) return '';
 		$prefixes = [1, 2, 3, 4, -1];
         return $prefixes[floor($date->format('j') / 7)];
     }

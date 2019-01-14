@@ -1,5 +1,12 @@
 # Calendarize Changelog
 
+## 1.1.8 - 2019-01-14
+
+### Update
+
+- Update weekMonthText and weekOfMonth
+
+
 ## 1.1.7 - 2019-01-14
 
 ### Update
