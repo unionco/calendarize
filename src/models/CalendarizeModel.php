@@ -51,7 +51,9 @@ class CalendarizeModel extends Model
     static protected $RRULEMAP = [
         'daily' => 'DAILY',
         'weekly' => 'WEEKLY',
-        'monthly' => 'MONTHLY'
+        'biweekly' => 'WEEKLY',
+        'monthly' => 'MONTHLY',
+        'yearly' => 'YEARLY',
     ];
 
     static protected $RRULEDAYMAP = [
@@ -157,7 +159,7 @@ class CalendarizeModel extends Model
 
         // if repeats find the next occurence else return the start date
         if ($this->repeats) {
-            if (isset($this->endRepeatDate)) {
+            if (!empty($this->endRepeatDate)) {
                 $this->endRepeatDate->setTime($this->startDate->format('H'), $this->startDate->format('i'));
             }
 
@@ -173,7 +175,7 @@ class CalendarizeModel extends Model
             if (count($occurences)) {
                 $nextOffer = $occurences[0];
 
-                if ($this->endRepeat !== 'never' && $this->endRepeatDate) {
+                if ($this->endRepeat !== 'never' && !empty($this->endRepeatDate)) {
                     if ($nextOffer > $this->endRepeatDate) {
                         return $this->endRepeatDate;
                     }
@@ -264,16 +266,23 @@ class CalendarizeModel extends Model
             
             if ($this->endRepeat === 'never') {
                 $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-                $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+2 months'));
+                $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+1 year'));
             }
 
             switch ($this->repeatType) {
                 case 'daily':
+                case 'yearly':
                     break;
                 case 'weekly':
                     $config['BYDAY'] = array_map(function ($day) {
                         return static::$RRULEDAYMAP[$day];
                     }, array_keys($this->days ?? []));
+                    break;
+                case 'biweekly':
+                    $config['BYDAY'] = array_map(function ($day) {
+                        return static::$RRULEDAYMAP[$day];
+                    }, array_keys($this->days ?? []));
+                    $config['INTERVAL'] = 2;
                     break;
                 case 'monthly':
                     if ($this->months === 'onMonthDay') {

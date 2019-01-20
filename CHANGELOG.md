@@ -1,5 +1,12 @@
 # Calendarize Changelog
 
+## 1.1.9 - 2019-01-19
+
+### Added
+
+- Yearly repeat option
+- Biweekly repeat option
+
 ## 1.1.8 - 2019-01-14
 
 ### Update

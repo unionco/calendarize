@@ -33,7 +33,9 @@
 {% set repeatOptions = [
     { value: 'daily', label: 'Daily' },
     { value: 'weekly', label: 'Weekly' },
-    { value: 'monthly', label: 'Monthly' }
+    { value: 'biweekly', label: 'Biweekly (every 2 weeks)' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'yearly', label: 'Yearly' },
 ] %}
 
 <div class="calendar-wrapper">
@@ -104,6 +106,28 @@
         <div class="calendar-row u-alignStart" data-if="fields[{{ name }}][repeats]" data-if-value="1">
             <div class="calendar-row-item">
                 <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="weekly">
+                    {% for day in daysOfWeek %}
+                        {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
+                        {% set labelId = 'label'~random() %}
+                        {% set selected = false %}
+
+                        {% if value is not null and value.days | length %}
+                            {% if day.value in value.days | keys %}
+                                {% set selected = true %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        <div class="day" id="fields-calendarDays-field">
+                            <label for="{{labelId}}">
+                                <input type="checkbox" id="{{labelId}}" name="{{ fieldName }}" {% if selected -%}checked{%- endif %}/>
+                                <div class="day-box">
+                                    {{ day.label }}
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="biweekly">
                     {% for day in daysOfWeek %}
                         {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
                         {% set labelId = 'label'~random() %}
