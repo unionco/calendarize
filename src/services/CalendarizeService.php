@@ -120,7 +120,7 @@ class CalendarizeService extends Component
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
-
+		$limit = null;
 		$tableName = CalendarizeRecord::$tableName;
 		$tableAlias = 'calendarize' . bin2hex(openssl_random_pseudo_bytes(5));
 		$on = [
@@ -129,6 +129,12 @@ class CalendarizeService extends Component
 			'[[elements_sites.siteId]] = [['.$tableAlias.'.ownerSiteId]]',
 		];
 		
+		// cant use limit in the normal criteria method, store it and unset it
+		if (isset($criteria['limit'])) {
+			$limit = $criteria['limit'];
+			unset($criteria['limit']);
+		}
+
 		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
 			$entryQuery = Entry::find();
 
@@ -151,7 +157,7 @@ class CalendarizeService extends Component
 						[ '=', $tableAlias . ".endRepeat", 'date' ],
 						[ '>=', $tableAlias . ".endRepeatDate", Db::prepareDateForDb($today) ],
 					],
-					[ '=', $tableAlias . ".endRepeatDate", 'never' ]
+					[ '=', $tableAlias . ".endRepeat", 'never' ],
 				]
 			]);
 			
@@ -161,6 +167,11 @@ class CalendarizeService extends Component
 			// order them
 			$entries = $this->sort($entryQuery->all(), strtolower($order));
 			
+			// if limit is applied, apply it after the sort to get the right ordered entries
+			if ($limit) {
+				$entries = array_splice($entries, 0, $limit);
+			}
+
 			$this->entryCache[$cacheHash] = $entries;
 		}
 		

@@ -266,7 +266,12 @@ class CalendarizeModel extends Model
             
             if ($this->endRepeat === 'never') {
                 $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-                $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+1 year'));
+
+                if ($this->repeatType === 'yearly') {
+                    $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+5 years'));
+                } else {
+                    $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+1 year'));
+                }
             }
 
             switch ($this->repeatType) {
