@@ -1,6 +1,6 @@
 # Calendarize Changelog
 
-## 1.1.10 - 2019-01-24
+## 1.1.11 - 2019-01-24
 
 ### Added
 
