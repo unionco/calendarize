@@ -58,6 +58,6 @@ class CalendarizeVariable
      */
     public function after($date = null, $criteria = null, $order = "asc")
     {
-        return Calendarize::$plugin->calendar->after($date, $criteria);
+        return Calendarize::$plugin->calendar->after($date, $criteria, $order);
     }
 }
