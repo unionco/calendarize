@@ -1,5 +1,17 @@
 # Calendarize Changelog
 
+## 1.1.10 - 2019-01-24
+
+### Added
+
+- Order parameter to `craft.calendarize.upcoming` method
+- Order parameter to `craft.calendarize.after` method
+
+### Fixed
+
+- Upcoming entries query 
+
+
 ## 1.1.9 - 2019-01-19
 
 ### Added

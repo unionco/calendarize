@@ -61,13 +61,13 @@ In your twig templates you can access the calendarize field as you would with an
         {{ event.calendatizeHandle.getOccurrencesBetween(start, end, limit) }}
 
 4. Added Query functionality through craft variables
-    - This queries entries with calendarize fields with upcoming occurences. Can take any normal criteria. Returns array of entries.
+    - This queries entries with calendarize fields with upcoming occurences. Can take any normal criteria and order (asc, desc). Returns array of entries.
 
-            {% set entries = craft.calendarize.upcoming({ section: ['events'] }) %}
+            {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
     
     - This queres entries with calendarize fields with occurences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
     
-            {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }) %}
+            {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
 
 ### Dependencies 
 

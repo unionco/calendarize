@@ -24,7 +24,11 @@ class CalendarizeVariable
     // =========================================================================
 
     /**
+     * Get week month text
      * 
+     * @param date date
+     * 
+     * @return string
      */
     public function weekMonthText($date)
     {
@@ -32,17 +36,27 @@ class CalendarizeVariable
     }
 
     /**
+     * Get upcoming entries
      * 
+     * @param criteria ElementCriteria
+     * @param order string
+     * 
+     * @return array
      */
-    public function upcoming($criteria = null)
+    public function upcoming($criteria = null, $order = "asc")
     {
-        return Calendarize::$plugin->calendar->upcoming($criteria);
+        return Calendarize::$plugin->calendar->upcoming($criteria, $order);
     }
 
     /**
+     * Get entries after date
      * 
+     * @param date date
+     * @param criteria ElementCriteria
+     * 
+     * @return array
      */
-    public function after($date = null, $criteria = null)
+    public function after($date = null, $criteria = null, $order = "asc")
     {
         return Calendarize::$plugin->calendar->after($date, $criteria);
     }

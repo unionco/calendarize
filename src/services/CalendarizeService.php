@@ -86,13 +86,13 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	public function after($date, $criteria = null)
+	public function after($date, $criteria = null, $order)
 	{
 		if (is_string($date)) {
 			$date = DateTimeHelper::toDateTime(new DateTime($date, new DateTimeZone(Craft::$app->getTimeZone())));
 		}
 		
-		$entries = $this->upcoming($criteria);
+		$entries = $this->upcoming($criteria, $order);
 		
 		// filter
 		$entries = array_filter($entries, function ($entry) use ($date) {
@@ -116,34 +116,51 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	public function upcoming($criteria = null)
+	public function upcoming($criteria = [], $order)
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
 
+		$tableName = CalendarizeRecord::$tableName;
+		$tableAlias = 'calendarize' . bin2hex(openssl_random_pseudo_bytes(5));
+		$on = [
+			'and',
+			'[[elements.id]] = [['.$tableAlias.'.ownerId]]',
+			'[[elements_sites.siteId]] = [['.$tableAlias.'.ownerSiteId]]',
+		];
+		
 		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
-			$records = CalendarizeRecord::find();
-			$records->where([
-				'or',
+			$entryQuery = Entry::find();
+
+			$entryQuery->join(
+				'JOIN',
+				"{$tableName} {$tableAlias}",
+				$on
+			);
+
+			$entryQuery->where([
+				'and',
 				[
-					'and',
-					['=', 'endRepeat', 'date'],
-					['>=', 'endRepeatDate', Db::prepareDateForDb($today)],
+					'not', 
+					[ $tableAlias . ".startDate" => null ]
 				],
-				['=', 'endRepeat', 'never'],
+				[
+					'or',
+					[
+						'and',
+						[ '=', $tableAlias . ".endRepeat", 'date' ],
+						[ '>=', $tableAlias . ".endRepeatDate", Db::prepareDateForDb($today) ],
+					],
+					[ '=', $tableAlias . ".endRepeatDate", 'never' ]
+				]
 			]);
 			
-			$entryIds = array_map(function ($record) {
-				return $record->ownerId;
-			}, $records->all());
-			
-			$entries = Entry::find()
-				->id(implode(",", $entryIds));
-			Craft::configure($entries, $criteria);
+			// configure the rest of the query
+			Craft::configure($entryQuery, $criteria);
 
 			// order them
-			$entries = $this->sort($entries->all());
-
+			$entries = $this->sort($entryQuery->all(), strtolower($order));
+			
 			$this->entryCache[$cacheHash] = $entries;
 		}
 		
@@ -157,7 +174,7 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	protected function sort($entries)
+	protected function sort($entries, $order)
 	{
 		usort($entries, function($a, $b) {
 			$fieldsA = $a->getFieldLayout()->getFields();
@@ -175,6 +192,10 @@ class CalendarizeService extends Component
 				return $startA <=> $startB;
 			}
 		});
+
+		if ($order === 'desc') {
+			return array_reverse($entries);
+		}
 
 		return $entries;
 	}
