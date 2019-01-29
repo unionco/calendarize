@@ -99,6 +99,11 @@ class CalendarizeService extends Component
 			$fields = $entry->getFieldLayout()->getFields();
 			$fieldIndex = array_search(CalendarizeField::class, array_keys($fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
+
+			if (!$entry->{$fieldHandle}->repeats) {
+				return $entry->{$fieldHandle}->startDate >= $date;
+			}
+			
 			$occurences = $entry->{$fieldHandle}->rrule()->getOccurrencesBetween($date, null, 1);
 			
 			if ($occurences) {
@@ -158,9 +163,15 @@ class CalendarizeService extends Component
 						[ '>=', $tableAlias . ".endRepeatDate", Db::prepareDateForDb($today) ],
 					],
 					[ '=', $tableAlias . ".endRepeat", 'never' ],
+					[
+						'and',
+						[ '=', $tableAlias . ".repeats", 0 ],
+						[ '>=', $tableAlias . ".startDate", Db::prepareDateForDb($today) ],
+					]
 				]
 			]);
-			
+					
+			// echo $entryQuery->getRawSql();die;
 			// configure the rest of the query
 			Craft::configure($entryQuery, $criteria);
 
@@ -320,27 +331,37 @@ class CalendarizeService extends Component
 		$record->startDate      = Db::prepareDateForDb($value->startDate);
         $record->endDate        = Db::prepareDateForDb($value->endDate);
         $record->repeats        = (bool) $value->repeats;
-        $record->allDay         = (bool) $value->allDay;
-        $record->endRepeat      = $value->endRepeat ?? null;
-        $record->repeatType     = $value->repeatType ?? null;
-        $record->days           = Json::encode($value->days ?? []);
-        $record->months         = $value->months ?? null;
-        
-        if (isset($value->endRepeatDate)) {
-            $record->endRepeatDate = Db::prepareDateForDb($value->endRepeatDate);
-        }
-
-        if (isset($value->exceptions)) {
-            $record->exceptions = Json::encode(array_map(function ($exception) use($value) {
-                return Db::prepareDateForDb($exception);
-            }, $value->exceptions ?? []));
-		}
+		$record->allDay         = (bool) $value->allDay;
 		
-		if (isset($value->timeChanges)) {
-            $record->timeChanges = Json::encode(array_map(function ($timeChange) use($value) {
-                return Db::prepareDateForDb($timeChange);
-            }, $value->timeChanges ?? []));
-        }
+		if ($record->repeats) {
+			$record->endRepeat      = $value->endRepeat ?? null;
+			$record->repeatType     = $value->repeatType ?? null;
+			$record->days           = Json::encode($value->days ?? []);
+			$record->months         = $value->months ?? null;
+
+			if (isset($value->endRepeatDate)) {
+				$record->endRepeatDate = Db::prepareDateForDb($value->endRepeatDate);
+			}
+
+			if (isset($value->exceptions)) {
+				$record->exceptions = Json::encode(array_map(function ($exception) use($value) {
+					return Db::prepareDateForDb($exception);
+				}, $value->exceptions ?? []));
+			}
+			
+			if (isset($value->timeChanges)) {
+				$record->timeChanges = Json::encode(array_map(function ($timeChange) use($value) {
+					return Db::prepareDateForDb($timeChange);
+				}, $value->timeChanges ?? []));
+			}
+		} else {
+			$record->endRepeat      = null;
+			$record->endRepeatDate  = null;
+			$record->repeatType     = null;
+			$record->days           = null;
+			$record->months         = null;
+			$record->timeChanges    = null;
+		}
 
 		$save = $record->save();
 

@@ -82,7 +82,7 @@ class CalendarizeModel extends Model
                     case 'startDate':
                     case 'endDate':
                     case 'endRepeatDate':
-                        $this->{$key} = DateTimeHelper::toDateTime($value);
+                        $this->{$key} = isset($value) ? DateTimeHelper::toDateTime($value) : null;
                         break;
                     case 'exceptions':
                         $value = is_string($value) ? Json::decode($value) : $value;
@@ -97,7 +97,7 @@ class CalendarizeModel extends Model
                         }, $value ?? []);
                         break;
                     case 'days':
-                        $this->{$key} = is_string($value) ? Json::decode($value) : $value;
+                        $this->{$key} = is_string($value) && isset($value) ? Json::decode($value) : $value;
                         break;
                     default:
                         $this->{$key} = $value;
@@ -183,7 +183,6 @@ class CalendarizeModel extends Model
 
                 return $nextOffer;
             }
-            
         }
 
         return $this->startDate;
@@ -246,9 +245,12 @@ class CalendarizeModel extends Model
     /**
      * 
      */
-    public function readable()
+    public function readable(array $opts = [])
     {
-        return $this->rrule()->getRRules()[0]->humanReadable();
+        if ($this->repeats) {
+            return $this->rrule()->getRRules()[0]->humanReadable($opts);
+        }
+        return '';
     }
 
     /**
@@ -256,6 +258,11 @@ class CalendarizeModel extends Model
      */
     public function rrule()
     {
+        // prevent direct call if doesnt repeat
+        if (!$this->repeats) {
+            throw new \Exception('Cannot use RRULE with non repeating values', 1);
+        }
+
         if (null === $this->occurenceCache) {
             $config = [
                 'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),

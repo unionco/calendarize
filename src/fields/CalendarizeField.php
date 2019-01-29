@@ -62,12 +62,12 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @var string
      */
-    public $endRepeat = 'never';
+    public $endRepeat = NULL;
 
     /**
      * @var datetime
      */
-    public $endRepeatDate;
+    public $endRepeatDate = NULL;
 
     /**
      * @var array
@@ -82,7 +82,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @var string
      */
-    public $repeatType = 'week';
+    public $repeatType = NULL;
 
     /**
      * @var string
@@ -153,20 +153,6 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
 		Calendarize::$plugin->calendar->saveField($this, $element);
 		parent::afterElementSave($element, $isNew);
     }
-    
-    // /**
-    //  * @inheritdoc
-    //  */
-    // public function getSettingsHtml()
-    // {
-    //     // Render the settings template
-    //     return Craft::$app->getView()->renderTemplate(
-    //         'calendarize/_components/fields/CalendarizeField_settings',
-    //         [
-    //             'field' => $this,
-    //         ]
-    //     );
-    // }
 
     /**
      * @inheritdoc
@@ -177,7 +163,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
             return '-';
         }
         
-        $hr = $value->rrule()->getRRules()[0]->humanReadable();
+        $hr = $value->readable();
         $html = "<span title=\"{$hr}\">";
         
         if ($value->hasPassed()) {

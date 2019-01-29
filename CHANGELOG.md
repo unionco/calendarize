@@ -1,5 +1,15 @@
 # Calendarize Changelog
 
+## 1.1.15 - 2019-01-30
+
+## Added
+- RRULE humanreadable options [RRULE DOCS](https://github.com/rlanvin/php-rrule/wiki/RRule#humanreadablearray-opt)
+- From RRULE Package: "Note: this option method will produce better results if PHP intl extension is available."
+
+## Fixed
+- Upcoming entries still showing non repeating past events
+- RRULE usage when entry does not repeat is no longer possible 
+
 ## 1.1.13 - 2019-01-24
 
 ### Added
