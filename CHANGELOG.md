@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.1.16 - 2019-01-31
+
+## Fixed
+- Sorting method wasn't checking the field type correctly and calling `next` on none calendarize field types.
+
 ## 1.1.15 - 2019-01-30
 
 ## Added

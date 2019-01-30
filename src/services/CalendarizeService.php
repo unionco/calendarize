@@ -200,12 +200,12 @@ class CalendarizeService extends Component
 	{
 		usort($entries, function($a, $b) {
 			$fieldsA = $a->getFieldLayout()->getFields();
-			$fieldAIndex = array_search(CalendarizeField::class, array_keys($fieldsA));
+			$fieldAIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fieldsA));
 			$fieldAHandle = $fieldsA[$fieldAIndex]->handle;
-
-			$fieldsB = $b->getFieldLayout()->getFields();
-			$fieldBIndex = array_search(CalendarizeField::class, array_keys($fieldsB));
-			$fieldBHandle = $fieldsB[$fieldBIndex]->handle;
+			
+			$fieldsB = $a->getFieldLayout()->getFields();
+			$fieldBIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fieldsB));
+			$fieldBHandle = $fieldsA[$fieldBIndex]->handle;
 			
 			$startA = $a->{$fieldAHandle}->next();
 			$startB = $b->{$fieldBHandle}->next();
