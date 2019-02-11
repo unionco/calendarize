@@ -71,7 +71,7 @@ class CalendarizeModel extends Model
     // =========================================================================
 
     /** @var CalendarModel[] */
-    private $occurenceCache;
+    private $occurrenceCache;
 
     // Public Methods
     // =========================================================================
@@ -120,7 +120,7 @@ class CalendarizeModel extends Model
     }
 
     /**
-     * Returns the calendar next occurence
+     * Returns the calendar next occurrence
      *
      * @return string
      */
@@ -144,7 +144,7 @@ class CalendarizeModel extends Model
     }
 
     /**
-     * Gets the next occurence datetime
+     * Gets the next occurrence datetime
      * 
      * @return datetime
      */
@@ -160,28 +160,28 @@ class CalendarizeModel extends Model
         
         // This event isnt in range just yet...
         if ($today->format('Y-m-d') < $this->startDate->format('Y-m-d')) {
-            return new Occurence($this->owner, $this->startDate);
+            return new Occurrence($this->owner, $this->startDate);
         }
 
-        // if repeats find the next occurence else return the start date
+        // if repeats find the next occurrence else return the start date
         if ($this->repeats) {
             if (!empty($this->endRepeatDate)) {
                 $this->endRepeatDate->setTime($this->startDate->format('H'), $this->startDate->format('i'));
             }
 
-            // if it ends at somepoint and we are passed that date, return the last occurence
+            // if it ends at somepoint and we are passed that date, return the last occurrence
             if ($this->endRepeat !== 'never' && $today > $this->endRepeatDate) {
-                return new Occurence($this->owner, $this->endRepeatDate);
+                return new Occurrence($this->owner, $this->endRepeatDate);
             }
 
-            $occurences = $this->getOccurrencesBetween($today, null, 1);
+            $occurrences = $this->getOccurrencesBetween($today, null, 1);
 
-            if (count($occurences)) {
-                $nextOffer = $occurences[0];
+            if (count($occurrences)) {
+                $nextOffer = $occurrences[0];
 
                 if ($this->endRepeat !== 'never' && !empty($this->endRepeatDate)) {
                     if ($nextOffer > $this->endRepeatDate) {
-                        return new Occurence($this->owner, $this->endRepeatDate);
+                        return new Occurrence($this->owner, $this->endRepeatDate);
                     }
                 }
 
@@ -189,33 +189,33 @@ class CalendarizeModel extends Model
             }
         }
 
-        return new Occurence($this->owner, $this->startDate);
+        return new Occurrence($this->owner, $this->startDate);
     }
 
     /**
-     * Get next occurences
+     * Get next occurrences
      * 
      * @var int 
      * 
      * @return array
      */
-    public function getOccurences($limit = 10)
+    public function getOccurrences($limit = 10)
     {
         if (empty($this->startDate) && empty($this->endDate)) {
             return [];
         }
 
-        $occurences = $this->rrule()->getOccurrences($limit);
+        $occurrences = $this->rrule()->getOccurrences($limit);
         
-        $this->_adjustTimeChanges($occurences);
+        $this->_adjustTimeChanges($occurrences);
         
-        return array_map(function($occurence) {
-            return new Occurence($this->owner, $occurence);
-        }, $occurences);
+        return array_map(function($occurrence) {
+            return new Occurrence($this->owner, $occurrence);
+        }, $occurrences);
     }
 
     /**
-     * Get occurences between two dates
+     * Get occurrences between two dates
      * 
      * @param startDate string|Datetime
      * @param startDate string|Datetime
@@ -236,13 +236,13 @@ class CalendarizeModel extends Model
             $endDate = DateTimeHelper::toDateTime(new DateTime($endDate, new DateTimeZone(Craft::$app->getTimeZone())));
         }
 
-        $occurences = $this->rrule()->getOccurrencesBetween($startDate, $endDate, $limit);
+        $occurrences = $this->rrule()->getOccurrencesBetween($startDate, $endDate, $limit);
 
-        $this->_adjustTimeChanges($occurences);
+        $this->_adjustTimeChanges($occurrences);
 
-        return array_map(function($occurence) {
-            return new Occurence($this->owner, $occurence);
-        }, $occurences);
+        return array_map(function($occurrence) {
+            return new Occurrence($this->owner, $occurrence);
+        }, $occurrences);
     }
 
     /**
@@ -288,7 +288,7 @@ class CalendarizeModel extends Model
             throw new \Exception('Cannot use RRULE with non repeating values', 1);
         }
 
-        if (null === $this->occurenceCache) {
+        if (null === $this->occurrenceCache) {
             $config = [
                 'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),
                 'INTERVAL'   => 1,
@@ -340,10 +340,10 @@ class CalendarizeModel extends Model
             }
 
             // cache rset
-            $this->occurenceCache = $rset;
+            $this->occurrenceCache = $rset;
         }
         
-        return $this->occurenceCache;
+        return $this->occurrenceCache;
     }
 
     /**
@@ -360,20 +360,20 @@ class CalendarizeModel extends Model
     /**
      * 
      */
-    private function _adjustTimeChanges(&$occurences = [])
+    private function _adjustTimeChanges(&$occurrences = [])
     {
-        // set the start time to all occurences
-        $this->_adjustTimes($occurences);
+        // set the start time to all occurrences
+        $this->_adjustTimes($occurrences);
 
         // change out times if changes exists
         if (isset($this->timeChanges) && count($this->timeChanges)) {
-            foreach ($occurences as $key => $occurence) {
-                // find in occurences
-                $change = array_filter($this->timeChanges, function ($change) use ($occurence) {
-                    return $change->format('Y-m-d') === $occurence->format('Y-m-d');
+            foreach ($occurrences as $key => $occurrence) {
+                // find in occurrences
+                $change = array_filter($this->timeChanges, function ($change) use ($occurrence) {
+                    return $change->format('Y-m-d') === $occurrence->format('Y-m-d');
                 });
                 if ($change) {
-                    $occurences[$key] = array_shift($change);
+                    $occurrences[$key] = array_shift($change);
                 }
             }
         }
@@ -382,11 +382,11 @@ class CalendarizeModel extends Model
     /**
      * 
      */
-    private function _adjustTimes(&$occurences = [])
+    private function _adjustTimes(&$occurrences = [])
     {
         // change out times
-        foreach ($occurences as $key => $occurence) {
-            $occurences[$key]->setTime($this->startDate->format('H'), $this->startDate->format('i'));
+        foreach ($occurrences as $key => $occurrence) {
+            $occurrences[$key]->setTime($this->startDate->format('H'), $this->startDate->format('i'));
         }
     }
 }

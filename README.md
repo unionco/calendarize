@@ -57,32 +57,32 @@ In your twig templates you can access the calendarize field as you would with an
 3. RRule functionality
 
         {{ event.calendarizeHandle.rrule }} 
-        {{ event.calendarizeHandle.getOccurences(limit) }}
+        {{ event.calendarizeHandle.getOccurrences(limit) }}
         {{ event.calendarizeHandle.getOccurrencesBetween(start, end, limit) }}
 
 4. Added Query functionality through craft variables
-    - This queries entries with calendarize fields with upcoming occurences. Can take any normal criteria and order (asc, desc). Returns array of entries.
+    - This queries entries with calendarize fields with upcoming occurrences. Can take any normal criteria and order (asc, desc). Returns array of entries.
 
             {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
     
-    - This queries entries with calendarize fields with occurences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
+    - This queries entries with calendarize fields with occurrences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
     
             {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
 
-    - This queries entries with calendarize fields with occurences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
+    - This queries entries with calendarize fields with occurrences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
     
             {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, 'asc|desc') %}
 
 ### Dependencies 
 
 - RRULE
-    This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurences` method returns all occurences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
+    This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurrences` method returns all occurrences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
 
 
 ## Calendarize Roadmap
 
 ### Matrix Support
-Although the calendarize field _can_ be used in a Matrix Block context, the occurence queries (`upcoming`, `after`, `between`) will not find those elements. Currently, we are just using the `EntryQuery` to populate occurences. We are working on a way to allow for querying of Matrix data as well.
+Although the calendarize field _can_ be used in a Matrix Block context, the occurence queries (`upcoming`, `after`, `between`) will not find those elements. Currently, we are just using the `EntryQuery` to populate occurrences. We are working on a way to allow for querying of Matrix data as well.
 
 
 Brought to you by [Franco Valdes](https://union.co)

@@ -167,9 +167,9 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
         $html = "<span title=\"{$hr}\">";
         
         if ($value->hasPassed()) {
-            $html .= "<b>Last Occurence:</b>";
+            $html .= "<b>Last Occurrence:</b>";
         } else {
-            $html .= "<b>Next Occurence:</b>";
+            $html .= "<b>Next Occurrence:</b>";
         }
 
         $html .= "<br/>" . $value->next()->format('l, m/d/Y @ h:i:s a');

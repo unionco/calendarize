@@ -255,7 +255,7 @@
     {% if value is defined and value.startDate %}
         <div class="calendar-data">
             <p>
-                {% if value.hasPassed %}Date:{% else %}Next Occurence:{% endif %} 
+                {% if value.hasPassed %}Date:{% else %}Next Occurrence:{% endif %} 
                 {% if value.allDay %}
                     <b>{{ value.next.format('m/d/Y') }}</b>
                 {% else %}
@@ -264,11 +264,11 @@
             </p>
             {% if value.repeats %}
                 <ul>
-                    <li>Occurences:</li>
-                    {% for occurence in value.getOccurences(10) %}
-                        <li>{{ occurence.format('m/d/Y @ h:i:s a') }}</li>
+                    <li>Occurrences:</li>
+                    {% for occurrence in value.getOccurrences(10) %}
+                        <li>{{ occurrence.format('m/d/Y @ h:i:s a') }}</li>
                     {% endfor %}
-                    {% if value.rrule.getOccurrences | length > 10 %}
+                    {% if value.getOccurrences | length > 10 %}
                         <li>...</li>
                     {% endif %}
                 </ul>

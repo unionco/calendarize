@@ -14,7 +14,7 @@ use craft\base\Element;
 use DateTime;
 use ReflectionClass;
 
-class Occurence
+class Occurrence
 {
     // Public Properties
     // =========================================================================

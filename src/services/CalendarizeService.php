@@ -24,7 +24,7 @@ use DateTimeZone;
 use unionco\calendarize\Calendarize;
 use unionco\calendarize\fields\CalendarizeField;
 use unionco\calendarize\models\CalendarizeModel;
-use unionco\calendarize\models\Occurence;
+use unionco\calendarize\models\Occurrence;
 use unionco\calendarize\records\CalendarizeRecord;
 
 /**
@@ -78,7 +78,7 @@ class CalendarizeService extends Component
 	}
 	
 	/**
-	 * Get entries with future occurence of date
+	 * Get entries with future occurrence of date
 	 * 
 	 * @param date string|date
 	 * @param criteria mixed
@@ -99,7 +99,7 @@ class CalendarizeService extends Component
 		}
 
 		$entries = $this->_entries($criteria);
-		$allOccurences = [];
+		$allOccurrences = [];
 
 		foreach ($entries as $key => $entry) {
 			$fields = $entry->getFieldLayout()->getFields();
@@ -107,31 +107,31 @@ class CalendarizeService extends Component
 			$fieldHandle = $fields[$fieldIndex]->handle;
 
 			if (!$entry->{$fieldHandle}->repeats) {
-				$allOccurences[] = new Occurence($entry, $entry->{$fieldHandle}->startDate);
+				$allOccurrences[] = new Occurrence($entry, $entry->{$fieldHandle}->startDate);
 			}
 			
-			$occurences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, null);
+			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, null);
 			
-			if ($occurences) {
-				foreach ($occurences as $key => $occurence) {
-					$allOccurences[] = $occurence;
+			if ($occurrences) {
+				foreach ($occurrences as $key => $occurrence) {
+					$allOccurrences[] = $occurrence;
 				}
 			}
 		}
 
 		// order them
-		$allOccurences = $this->sort($allOccurences, strtolower($order));
+		$allOccurrences = $this->sort($allOccurrences, strtolower($order));
 
 		// if limit is applied, apply it after the sort to get the right ordered entries
 		if (isset($limit)) {
-			$allOccurences = array_splice($allOccurences, 0, $limit);
+			$allOccurrences = array_splice($allOccurrences, 0, $limit);
 		}
 
-		return $allOccurences;
+		return $allOccurrences;
 	}
 
 	/**
-	 * Get entries with future occurence of date
+	 * Get entries with future occurrence of date
 	 * 
 	 * @param start string|date
 	 * @param end string|date
@@ -157,7 +157,7 @@ class CalendarizeService extends Component
 		}
 
 		$entries = $this->_entries($criteria);
-		$allOccurences = [];
+		$allOccurrences = [];
 
 		foreach ($entries as $key => $entry) {
 			$fields = $entry->getFieldLayout()->getFields();
@@ -166,32 +166,32 @@ class CalendarizeService extends Component
 
 			if (!$entry->{$fieldHandle}->repeats) {
 				if ($entry->{$fieldHandle}->startDate >= $start) {
-					$allOccurences[] = new Occurence($entry, $entry->{$fieldHandle}->startDate);
+					$allOccurrences[] = new Occurrence($entry, $entry->{$fieldHandle}->startDate);
 				}
 			}
 			
-			$occurences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, null);
+			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, null);
 			
-			if ($occurences) {
-				foreach ($occurences as $key => $occurence) {
-					$allOccurences[] = $occurence;
+			if ($occurrences) {
+				foreach ($occurrences as $key => $occurrence) {
+					$allOccurrences[] = $occurrence;
 				}
 			}
 		}
 
 		// order them
-		$allOccurences = $this->sort($allOccurences, strtolower($order));
+		$allOccurrences = $this->sort($allOccurrences, strtolower($order));
 
 		// if limit is applied, apply it after the sort to get the right ordered entries
 		if (isset($limit)) {
-			$allOccurences = array_splice($allOccurences, 0, $limit);
+			$allOccurrences = array_splice($allOccurrences, 0, $limit);
 		}
 
-		return $allOccurences;
+		return $allOccurrences;
 	}
 
 	/**
-	 * Get future occurence
+	 * Get future occurrence
 	 * 
 	 * @param criteria mixed
 	 * @param order string
@@ -206,7 +206,7 @@ class CalendarizeService extends Component
 	}
 
 	/**
-	 * Get entries with future occurence
+	 * Get entries with future occurrence
 	 * 
 	 * @param criteria mixed
 	 * 
@@ -266,7 +266,7 @@ class CalendarizeService extends Component
 	}
 
 	/**
-	 * Sort entries by next occurences
+	 * Sort entries by next occurrences
 	 * 
 	 * @param entries array
 	 * 
