@@ -1,10 +1,12 @@
-{% set id = (id ?? 'date'~random())~'-date' -%}
+{# {% set id = (id ?? 'date'~random())~'-date' -%} #}
+{% set id = id ~ '-date' %}
 {% set name = name ?? null -%}
 {% set value = value ?? null -%}
 
 <div class="datewrapper"
     {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
     {%- include "_includes/forms/text" with {
+        id: id,
         name: (name ? name~'[date]'),
         autocomplete: false,
         size: 10,

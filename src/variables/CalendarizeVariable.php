@@ -11,6 +11,8 @@
 namespace unionco\calendarize\variables;
 
 use Craft;
+use craft\elements\Entry;
+use craft\elements\MatrixBlock;
 use unionco\calendarize\Calendarize;
 
 /**
@@ -41,9 +43,9 @@ class CalendarizeVariable
      * @param criteria ElementCriteria
      * @param order string
      * 
-     * @return array
+     * @return array Occurance[]
      */
-    public function upcoming($criteria = null, $order = "asc")
+    public function upcoming($criteria = [], $order = "asc")
     {
         return Calendarize::$plugin->calendar->upcoming($criteria, $order);
     }
@@ -53,11 +55,27 @@ class CalendarizeVariable
      * 
      * @param date date
      * @param criteria ElementCriteria
+     * @param order string
      * 
-     * @return array
+     * @return array Occurance[]
      */
-    public function after($date = null, $criteria = null, $order = "asc")
+    public function after($date = null, $criteria = [], $order = "asc")
     {
         return Calendarize::$plugin->calendar->after($date, $criteria, $order);
+    }
+
+    /**
+     * Get entries between two dates
+     * 
+     * @param start string|date
+     * @param end string|date
+     * @param criteria ElementCriteria
+     * @param order string
+     * 
+     * @return array Occurance[]
+     */
+    public function between($start, $end, $criteria = [], $order = "asc")
+    {
+        return Calendarize::$plugin->calendar->between($start, $end, $criteria, $order);
     }
 }

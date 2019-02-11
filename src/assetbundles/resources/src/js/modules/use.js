@@ -1,8 +1,8 @@
 
-export default function onInit() {
-    document.querySelectorAll('[data-use]').forEach((node) => {
+export default function onInit(context) {
+    context.querySelectorAll('[data-use]').forEach((node) => {
         const selector = node.getAttribute('data-use');
-        const input = document.querySelector(`input[name="${selector}"]`);
+        const input = context.querySelector(`input[name="${selector}"]`);
 
         const initialValue = input.value;
         node.innerHTML = getDateDay(initialValue);

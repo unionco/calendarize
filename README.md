@@ -28,7 +28,7 @@ Configuration is as follows:
 2. End Date - Datetime field
 3. All Day - Lightswitch
 4. Repeats - Lightswitch
-5. Repeat Type - Dropdown [Daily, Weekly, Monthly]
+5. Repeat Type - Dropdown [Daily, Weekly, BiWeekly, Monthly]
 6. Week Selector - Checkboxes
 7. Monthly Selector - Dropdown [On the date, On the weekday of month]
 8. Repeat Ends - Dropdown [Never, On Date]
@@ -57,17 +57,21 @@ In your twig templates you can access the calendarize field as you would with an
 3. RRule functionality
 
         {{ event.calendarizeHandle.rrule }} 
-        {{ event.calendatizeHandle.getOccurences(limit) }}
-        {{ event.calendatizeHandle.getOccurrencesBetween(start, end, limit) }}
+        {{ event.calendarizeHandle.getOccurences(limit) }}
+        {{ event.calendarizeHandle.getOccurrencesBetween(start, end, limit) }}
 
 4. Added Query functionality through craft variables
     - This queries entries with calendarize fields with upcoming occurences. Can take any normal criteria and order (asc, desc). Returns array of entries.
 
             {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
     
-    - This queres entries with calendarize fields with occurences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
+    - This queries entries with calendarize fields with occurences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
     
             {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
+
+    - This queries entries with calendarize fields with occurences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
+    
+            {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, 'asc|desc') %}
 
 ### Dependencies 
 
@@ -77,6 +81,8 @@ In your twig templates you can access the calendarize field as you would with an
 
 ## Calendarize Roadmap
 
-Open to adding features as needed.
+### Matrix Support
+Although the calendarize field _can_ be used in a Matrix Block context, the occurence queries (`upcoming`, `after`, `between`) will not find those elements. Currently, we are just using the `EntryQuery` to populate occurences. We are working on a way to allow for querying of Matrix data as well.
+
 
 Brought to you by [Franco Valdes](https://union.co)

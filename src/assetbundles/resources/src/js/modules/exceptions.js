@@ -14,13 +14,20 @@ class CalendarException {
 
         // dom setup
         this.dateField = node.querySelector('.hasDatepicker');
-        this.hiddenName = node.getAttribute(attr);
+        this.hiddenName = this.dateField.getAttribute('name');
+        this.dateField.removeAttribute('name');
+        node.querySelector('input[type="hidden"]').removeAttribute('name');
+
         this.listing = node.querySelector('.exceptions-list');
         this.listingItems = this.listing.querySelectorAll('li');
 
         if (withTime) {
             this.timeField = node.querySelector('.ui-timepicker-input');
             this.trigger = node.querySelector('[data-trigger]');
+            
+            const datetimewrapper = node.querySelector('.datetimewrapper');
+            datetimewrapper.querySelectorAll('input').forEach(node => node.removeAttribute('name'));
+
             this.addEventListener(this.trigger, 'click');
         } else {
             this.addEventListener(this.dateField, 'custom');
@@ -51,8 +58,12 @@ class CalendarException {
 
             // create base inputs
             const newValue = this.dateField.value;
-            const hidden = this.createInput(this.hiddenName.replace('[]', `[${length || 0}]`), 'hidden', newValue);
-            const timezone = this.createInput(this.hiddenName.replace('[]', `[${length || 0}]`).replace('date', 'timezone'), 'hidden', Craft.timezone);
+            const name = this.hiddenName;
+            const position = name.indexOf('[date]');
+            const newFieldName = [name.slice(0, position), `[${length || 0}]`, name.slice(position)].join('');
+
+            const hidden = this.createInput(newFieldName, 'hidden', newValue);
+            const timezone = this.createInput(newFieldName.replace('date', 'timezone'), 'hidden', Craft.timezone);
 
             p.innerHTML = getDayName(newValue) + ', ' + newValue;
 
@@ -65,7 +76,7 @@ class CalendarException {
             // add time input
             if (this.withTime) {
                 const newTimeValue = this.timeField.value;
-                const hiddenTime = this.createInput(this.hiddenName.replace('[]', `[${length || 0}]`).replace('date', 'time'), 'hidden', newTimeValue);
+                const hiddenTime = this.createInput(newFieldName.replace('date', 'time'), 'hidden', newTimeValue);
                 p.innerHTML += ' ' + newTimeValue;
                 li.appendChild(hiddenTime);
                 this.timeField.value = '';
@@ -87,10 +98,10 @@ class CalendarException {
     }
 }
 
-export function dateExceptionInit() {
-    document.querySelectorAll('[data-exceptions]').forEach((node) => new CalendarException(node, 'data-exceptions'));
+export function dateExceptionInit(context) {
+    context.querySelectorAll('[data-exceptions]').forEach((node) => new CalendarException(node, 'data-exceptions'));
 }
 
-export function timeExceptionInit() {
-    document.querySelectorAll('[data-time-exceptions]').forEach((node) => new CalendarException(node, 'data-time-exceptions', true));
+export function timeExceptionInit(context) {
+    context.querySelectorAll('[data-time-exceptions]').forEach((node) => new CalendarException(node, 'data-time-exceptions', true));
 }

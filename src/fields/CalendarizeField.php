@@ -183,14 +183,17 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     public function getInputHtml($value, ElementInterface $element = null): string
     {
         // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(FieldAssetBundle::class);
+        $view = Craft::$app->getView();
 
         // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $id = $view->formatInputId($this->handle);
+        $namespacedId = $view->namespaceInputId($id);
+
+        $view->registerAssetBundle(FieldAssetBundle::class);
+        $view->registerJs("new Calendarize('{$namespacedId}');");
 
         // Render the input template
-        return Craft::$app->getView()->renderTemplate(
+        return $view->renderTemplate(
             'calendarize/_components/fields/CalendarizeField_input',
             [
                 'name' => $this->handle,

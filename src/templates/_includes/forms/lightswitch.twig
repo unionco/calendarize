@@ -6,7 +6,6 @@
 {%- set disabled = (disabled is defined ? disabled : false) %}
 
 <div class="lightswitch{% if on %} on{% endif %}{% if small %} small{% endif %}{% if toggle or reverseToggle %} fieldtoggle{% endif %}{% if disabled %} disabled{% endif %}" tabindex="0" data-value="{{ value }}"
-    {%- if id is defined %} id="{{ id }}"{% endif %}
     {%- if labelId is defined %} aria-labelledby="{{ labelId }}"{% endif %}
     {%- if toggle %} data-target="{{ toggle }}"{% endif %}
     {%- if reverseToggle %} data-reverse-target="{{ reverseToggle }}"{% endif %}
@@ -18,6 +17,6 @@
         <div class="label off"></div>
     </div>
     {% if name is defined -%}
-        <input type="hidden" name="{{ name }}" value="{{ on ? value }}"{% if disabled %} disabled{% endif %}>
+        <input id="{{ id }}" type="hidden" name="{{ name }}" value="{{ on ? value }}"{% if disabled %} disabled{% endif %}>
     {%- endif %}
 </div>

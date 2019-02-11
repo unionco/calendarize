@@ -33,6 +33,7 @@ class CalendarizeModel extends Model
     /**
      * @var string
      */
+    private $owner;
     public $ownerId;
     public $ownerSiteId;
     public $fieldId;
@@ -74,7 +75,7 @@ class CalendarizeModel extends Model
 
     // Public Methods
     // =========================================================================
-    public function __construct($attributes = [], array $config = [])
+    public function __construct($owner, $attributes = [], array $config = [])
 	{
 		foreach ($attributes as $key => $value) {
 			if (property_exists($this, $key)) {
@@ -106,6 +107,7 @@ class CalendarizeModel extends Model
             }
         }
 
+        $this->owner = $owner;
 		parent::__construct($config);
     }
 
@@ -132,7 +134,9 @@ class CalendarizeModel extends Model
     }
 
     /**
+     * Bool if end date exist
      * 
+     * @return bool
      */
     public function ends()
     {
@@ -140,7 +144,9 @@ class CalendarizeModel extends Model
     }
 
     /**
+     * Gets the next occurence datetime
      * 
+     * @return datetime
      */
     public function next()
     {
@@ -154,7 +160,7 @@ class CalendarizeModel extends Model
         
         // This event isnt in range just yet...
         if ($today->format('Y-m-d') < $this->startDate->format('Y-m-d')) {
-            return $this->startDate;
+            return new Occurence($this->owner, $this->startDate);
         }
 
         // if repeats find the next occurence else return the start date
@@ -165,19 +171,17 @@ class CalendarizeModel extends Model
 
             // if it ends at somepoint and we are passed that date, return the last occurence
             if ($this->endRepeat !== 'never' && $today > $this->endRepeatDate) {
-                return $this->endRepeatDate;
+                return new Occurence($this->owner, $this->endRepeatDate);
             }
 
-            $occurences = $this->rrule()->getOccurrencesBetween($today, null, 1);
-
-            $this->_adjustTimeChanges($occurences);
+            $occurences = $this->getOccurrencesBetween($today, null, 1);
 
             if (count($occurences)) {
                 $nextOffer = $occurences[0];
 
                 if ($this->endRepeat !== 'never' && !empty($this->endRepeatDate)) {
                     if ($nextOffer > $this->endRepeatDate) {
-                        return $this->endRepeatDate;
+                        return new Occurence($this->owner, $this->endRepeatDate);
                     }
                 }
 
@@ -185,11 +189,15 @@ class CalendarizeModel extends Model
             }
         }
 
-        return $this->startDate;
+        return new Occurence($this->owner, $this->startDate);
     }
 
     /**
+     * Get next occurences
      * 
+     * @var int 
+     * 
+     * @return array
      */
     public function getOccurences($limit = 10)
     {
@@ -201,11 +209,18 @@ class CalendarizeModel extends Model
         
         $this->_adjustTimeChanges($occurences);
         
-        return $occurences;
+        return array_map(function($occurence) {
+            return new Occurence($this->owner, $occurence);
+        }, $occurences);
     }
 
     /**
+     * Get occurences between two dates
      * 
+     * @param startDate string|Datetime
+     * @param startDate string|Datetime
+     * 
+     * @return array
      */
     public function getOccurrencesBetween($startDate, $endDate = null, $limit = 1)
     {
@@ -225,11 +240,15 @@ class CalendarizeModel extends Model
 
         $this->_adjustTimeChanges($occurences);
 
-        return $occurences;
+        return array_map(function($occurence) {
+            return new Occurence($this->owner, $occurence);
+        }, $occurences);
     }
 
     /**
+     * Boolean if the element has passed
      * 
+     * @return boolean
      */
     public function hasPassed()
     {
@@ -237,13 +256,17 @@ class CalendarizeModel extends Model
             return false;
         }
 
-        $next = $this->next();
+        $next = $this->next()->next;
 
         return DateTimeHelper::isInThePast($next);
     }
 
     /**
+     * Gets the readable string from rrule
      * 
+     * @param opts array
+     * 
+     * @return string
      */
     public function readable(array $opts = [])
     {
@@ -254,7 +277,9 @@ class CalendarizeModel extends Model
     }
 
     /**
+     * Initial rrule for field params
      * 
+     * @return rrule
      */
     public function rrule()
     {

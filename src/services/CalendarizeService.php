@@ -15,6 +15,7 @@ use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
+use craft\elements\MatrixBlock;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\Json;
@@ -23,6 +24,7 @@ use DateTimeZone;
 use unionco\calendarize\Calendarize;
 use unionco\calendarize\fields\CalendarizeField;
 use unionco\calendarize\models\CalendarizeModel;
+use unionco\calendarize\models\Occurence;
 use unionco\calendarize\records\CalendarizeRecord;
 
 /**
@@ -37,9 +39,6 @@ class CalendarizeService extends Component
 
     /** @var CalendarModel[] */
 	private $entryCache = [];
-
-	/** @var CalendarModel[] */
-	private $fieldCache = [];
 	
     // Public Methods
     // =========================================================================
@@ -83,35 +82,127 @@ class CalendarizeService extends Component
 	 * 
 	 * @param date string|date
 	 * @param criteria mixed
+	 * @param order string
 	 * 
-	 * @return entries array
+	 * @return occurances array
 	 */
-	public function after($date, $criteria = null, $order)
+	public function after($date, $criteria = [], $order = 'asc')
 	{
 		if (is_string($date)) {
 			$date = DateTimeHelper::toDateTime(new DateTime($date, new DateTimeZone(Craft::$app->getTimeZone())));
 		}
 		
-		$entries = $this->upcoming($criteria, $order);
-		
-		// filter
-		$entries = array_filter($entries, function ($entry) use ($date) {
+		// cant use limit in the normal criteria method, store it and unset it
+		if (isset($criteria['limit'])) {
+			$limit = $criteria['limit'];
+			unset($criteria['limit']);
+		}
+
+		$entries = $this->_entries($criteria);
+		$allOccurences = [];
+
+		foreach ($entries as $key => $entry) {
 			$fields = $entry->getFieldLayout()->getFields();
-			$fieldIndex = array_search(CalendarizeField::class, array_keys($fields));
+			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
 
 			if (!$entry->{$fieldHandle}->repeats) {
-				return $entry->{$fieldHandle}->startDate >= $date;
+				$allOccurences[] = new Occurence($entry, $entry->{$fieldHandle}->startDate);
 			}
 			
-			$occurences = $entry->{$fieldHandle}->rrule()->getOccurrencesBetween($date, null, 1);
+			$occurences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, null);
 			
 			if ($occurences) {
-				return true;
+				foreach ($occurences as $key => $occurence) {
+					$allOccurences[] = $occurence;
+				}
 			}
-		});
+		}
 
-		return $entries;
+		// order them
+		$allOccurences = $this->sort($allOccurences, strtolower($order));
+
+		// if limit is applied, apply it after the sort to get the right ordered entries
+		if (isset($limit)) {
+			$allOccurences = array_splice($allOccurences, 0, $limit);
+		}
+
+		return $allOccurences;
+	}
+
+	/**
+	 * Get entries with future occurence of date
+	 * 
+	 * @param start string|date
+	 * @param end string|date
+	 * @param criteria mixed
+	 * @param order string
+	 * 
+	 * @return occurances array
+	 */
+	public function between($start, $end, $criteria = [], $order = 'asc')
+	{
+		if (is_string($start)) {
+			$start = DateTimeHelper::toDateTime(new DateTime($start, new DateTimeZone(Craft::$app->getTimeZone())));
+		}
+
+		if (is_string($end)) {
+			$end = DateTimeHelper::toDateTime(new DateTime($end, new DateTimeZone(Craft::$app->getTimeZone())));
+		}
+		
+		// cant use limit in the normal criteria method, store it and unset it
+		if (isset($criteria['limit'])) {
+			$limit = $criteria['limit'];
+			unset($criteria['limit']);
+		}
+
+		$entries = $this->_entries($criteria);
+		$allOccurences = [];
+
+		foreach ($entries as $key => $entry) {
+			$fields = $entry->getFieldLayout()->getFields();
+			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
+			$fieldHandle = $fields[$fieldIndex]->handle;
+
+			if (!$entry->{$fieldHandle}->repeats) {
+				if ($entry->{$fieldHandle}->startDate >= $start) {
+					$allOccurences[] = new Occurence($entry, $entry->{$fieldHandle}->startDate);
+				}
+			}
+			
+			$occurences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, null);
+			
+			if ($occurences) {
+				foreach ($occurences as $key => $occurence) {
+					$allOccurences[] = $occurence;
+				}
+			}
+		}
+
+		// order them
+		$allOccurences = $this->sort($allOccurences, strtolower($order));
+
+		// if limit is applied, apply it after the sort to get the right ordered entries
+		if (isset($limit)) {
+			$allOccurences = array_splice($allOccurences, 0, $limit);
+		}
+
+		return $allOccurences;
+	}
+
+	/**
+	 * Get future occurence
+	 * 
+	 * @param criteria mixed
+	 * @param order string
+	 * 
+	 * @return occurances array
+	 */
+	public function upcoming($criteria = [], $order = 'asc')
+	{
+		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
+		
+		return $this->after($today, $criteria, $order);
 	}
 
 	/**
@@ -121,7 +212,7 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	public function upcoming($criteria = [], $order)
+	private function _entries($criteria = [])
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
@@ -133,23 +224,17 @@ class CalendarizeService extends Component
 			'[[elements.id]] = [['.$tableAlias.'.ownerId]]',
 			'[[elements_sites.siteId]] = [['.$tableAlias.'.ownerSiteId]]',
 		];
-		
-		// cant use limit in the normal criteria method, store it and unset it
-		if (isset($criteria['limit'])) {
-			$limit = $criteria['limit'];
-			unset($criteria['limit']);
-		}
 
 		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
-			$entryQuery = Entry::find();
-
-			$entryQuery->join(
+			$query = Entry::find();
+			
+			$query->join(
 				'JOIN',
 				"{$tableName} {$tableAlias}",
 				$on
 			);
 
-			$entryQuery->where([
+			$query->where([
 				'and',
 				[
 					'not', 
@@ -171,19 +256,10 @@ class CalendarizeService extends Component
 				]
 			]);
 					
-			// echo $entryQuery->getRawSql();die;
 			// configure the rest of the query
-			Craft::configure($entryQuery, $criteria);
+			Craft::configure($query, $criteria);
 
-			// order them
-			$entries = $this->sort($entryQuery->all(), strtolower($order));
-			
-			// if limit is applied, apply it after the sort to get the right ordered entries
-			if ($limit) {
-				$entries = array_splice($entries, 0, $limit);
-			}
-
-			$this->entryCache[$cacheHash] = $entries;
+			$this->entryCache[$cacheHash] = $query->all();
 		}
 		
 		return $this->entryCache[$cacheHash];
@@ -196,19 +272,11 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	protected function sort($entries, $order)
+	protected function sort($entries, $order = 'asc')
 	{
 		usort($entries, function($a, $b) {
-			$fieldsA = $a->getFieldLayout()->getFields();
-			$fieldAIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fieldsA));
-			$fieldAHandle = $fieldsA[$fieldAIndex]->handle;
-			
-			$fieldsB = $a->getFieldLayout()->getFields();
-			$fieldBIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fieldsB));
-			$fieldBHandle = $fieldsA[$fieldBIndex]->handle;
-			
-			$startA = $a->{$fieldAHandle}->next();
-			$startB = $b->{$fieldBHandle}->next();
+			$startA = $a->next;
+			$startB = $b->next;
 
 			if ($startA && $startB) {
 				return $startA <=> $startB;
@@ -247,11 +315,11 @@ class CalendarizeService extends Component
 			&& \Craft::$app->request->isPost
 			&& $value
 		) {
-			$model = new CalendarizeModel($value);
+			$model = new CalendarizeModel($owner, $value);
 		} else if ($record) {
-			$model = new CalendarizeModel($record->getAttributes());
+			$model = new CalendarizeModel($owner, $record->getAttributes());
 		} else {
-			$model = new CalendarizeModel();
+			$model = new CalendarizeModel($owner);
 		}
 
 		return $model;
@@ -372,7 +440,7 @@ class CalendarizeService extends Component
 				'calendarize'
 			);
 		}
-
+		
 		return $save;
 	}
 }

@@ -1,9 +1,11 @@
 
-export default function onInit() {
-    document.querySelectorAll('[data-if]').forEach((node) => {
+export default {};
+export function onInit(context) {
+    context.querySelectorAll('[data-if]').forEach((node) => {
         const selector = node.getAttribute('data-if');
         const operator = node.getAttribute('data-if-value');
-        const trigger = document.querySelector(`[name="${selector}"]`);
+        const trigger = context.querySelector(`#${selector}`);
+
         const initialValue = trigger.value || "0";
 
         if (initialValue != operator) {

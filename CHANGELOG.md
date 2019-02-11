@@ -1,5 +1,15 @@
 # Calendarize Changelog
 
+## 1.2.0 - 2019-02-11
+
+### Added
+- New variable `between` to allow query to find occurences between two dates. Similar to the `after` method but restricting an end date as well.
+- New `Occurence` model to more easily sort occurences and access the `next` property. On the twig side, this new change is backwards compatible so no changes needed. 
+
+### Updated
+- Updated javascript to allow for multiple calendarize fields on the page and also in efforts to support matrix usage soon.
+
+
 ## 1.1.16 - 2019-01-31
 
 ## Fixed

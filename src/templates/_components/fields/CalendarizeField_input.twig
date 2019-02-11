@@ -45,7 +45,7 @@
                 {{ 
                     forms.lightswitchField({
                         label: 'All Day',
-                        id: name ~ 'AllDay',
+                        id: name ~ '-allDay',
                         name: name ~ '[allDay]',
                         value: ( value.allDay ?? false ),
                         on: ( value.allDay ?? false ),
@@ -56,10 +56,10 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.dateTimeField({
-                        id: name ~ 'StartDate',
+                        id: name ~ '-startDate',
                         name: name ~ '[startDate]',
                         value: ( value is not null and value.startDate ? value.startDate : null ),
-                        parent: name
+                        parent: namespacedId ~ '-allDay'
                     })
                 }}
             </div>
@@ -69,10 +69,10 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.dateTimeField({
-                        id: name ~ 'EndDate',
+                        id: name ~ '-endDate',
                         name: name ~ '[endDate]',
                         value: ( value is not null and value.endDate ? value.endDate : null ),
-                        parent: name
+                        parent: namespacedId ~ '-allDay'
                     })
                 }}
             </div>
@@ -82,7 +82,7 @@
                 {{ 
                     forms.lightswitchField({
                         label: 'Repeats',
-                        id: name ~ 'Repeats',
+                        id: name ~ '-repeats',
                         name: name ~ '[repeats]',
                         value: ( value.repeats ?? false ),
                         on: ( value.repeats ?? false )
@@ -90,10 +90,10 @@
                 }}
             </div>
 
-            <div class="calendar-row-item" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+            <div class="calendar-row-item" data-if="{{ namespacedId }}-repeats" data-if-value="1">
                 {{ 
                     forms.selectField({
-                        id: name ~ 'RepeatType',
+                        id: name ~ '-repeatType',
                         label: 'Every',
                         name: name ~ '[repeatType]',
                         value: ( value.repeatType ?? false ),
@@ -103,9 +103,9 @@
             </div>
         </div>
 
-        <div class="calendar-row u-alignStart" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+        <div class="calendar-row u-alignStart" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
-                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="weekly">
+                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="weekly">
                     {% for day in daysOfWeek %}
                         {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
                         {% set labelId = 'label'~random() %}
@@ -127,7 +127,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="biweekly">
+                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="biweekly">
                     {% for day in daysOfWeek %}
                         {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
                         {% set labelId = 'label'~random() %}
@@ -149,7 +149,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="calendar-row-days" data-if="fields[{{ name }}][repeatType]" data-if-value="monthly" data-monthly-select="fields[{{ name }}][startDate][date]">
+                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="monthly" data-monthly-select="{{ namespacedId }}-startDate-date">
                     {% set opts = [
                         { value: 'onDay', label: value.startDate ? value.startDate.format('jS') },
                         { value: 'onMonthDay', label: craft.calendarize.weekMonthText(value.startDate ?? now) }
@@ -167,7 +167,7 @@
             </div>
         </div>
 
-        <div class="calendar-row" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+        <div class="calendar-row" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="field">
                 <div class="heading">
                     <label>Ends Repeat</label>
@@ -177,14 +177,14 @@
                     <div class="calendar-row-item">
                         {{ 
                             forms.selectField({
-                                id: name ~ 'EndRepeat',
+                                id: name ~ '-endRepeat',
                                 name: name ~ '[endRepeat]',
                                 value: ( value.endRepeat ?? false ),
                                 options: endOptions
                             })
                         }}
                     </div>
-                    <div class="calendar-row-item" data-if="fields[{{ name }}][endRepeat]" data-if-value="date">
+                    <div class="calendar-row-item" data-if="{{ namespacedId }}-endRepeat" data-if-value="date">
                         {{ 
                             forms.dateField({
                                 id: name ~ 'EndRepeatDate',
@@ -197,12 +197,13 @@
             </div>
         </div>
 
-        <div class="calendar-row calendar-row-column" data-exceptions="fields[{{ name }}][exceptions][][date]" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+        <div class="calendar-row calendar-row-column" data-exceptions="fields[{{ name }}][exceptions][][date]" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
                 {{ 
                     forms.dateField({
                         label: 'Date Exceptions',
                         id: name ~ 'Exceptions',
+                        name: name ~ '[exceptions]',
                         value: null
                     })
                 }}
@@ -222,12 +223,13 @@
             </div>
         </div>
 
-        <div class="calendar-row calendar-row-column" data-time-exceptions="fields[{{ name }}][timeChanges][][date]" data-if="fields[{{ name }}][repeats]" data-if-value="1">
+        <div class="calendar-row calendar-row-column" data-time-exceptions="fields[{{ name }}][timeChanges][][date]" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
                 {{ 
                     forms.dateTimeField({
                         label: 'Time Exceptions',
                         id: name ~ 'TimeChanges',
+                        name: name ~ '[timeChanges]',
                         value: null,
                         timeException: true
                     })

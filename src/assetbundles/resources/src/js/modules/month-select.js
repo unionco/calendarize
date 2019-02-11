@@ -3,10 +3,11 @@ import {
     getDateDay
 } from '../util/helpers';
 
-export default function onInit() {
-    document.querySelectorAll('[data-monthly-select]').forEach((node) => {
+export default {};
+export function onInit(context) {
+    context.querySelectorAll('[data-monthly-select]').forEach((node) => {
         const selector = node.getAttribute('data-monthly-select');
-        const dateField = document.querySelector(`[name="${selector}"]`);
+        const dateField = context.querySelector(`#${selector}`);
         const select = node.querySelector('select');
 
         dateField.addEventListener('custom', (e) => {

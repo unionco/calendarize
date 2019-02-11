@@ -1,15 +1,23 @@
-import InitIf from './modules/if';
-import InitUse from './modules/use';
-import InitLightswitch from './modules/light-switch';
-import InitMonthSelect from './modules/month-select';
+import { onInit as IfInit } from './modules/if';
+import { onInit as MonthSelectInit } from './modules/month-select';
+import { onInit as ListSwitchInit } from './modules/light-switch';
 import { dateExceptionInit, timeExceptionInit } from './modules/exceptions';
 
-window.onload = () => {
-    InitIf();
-    InitUse();
-    InitLightswitch();
-    InitMonthSelect();
-    
-    dateExceptionInit();
-    timeExceptionInit();
-};
+class Calendarize {
+    constructor(namespaceId) {
+        const context = document.getElementById(`${namespaceId}-field`);
+        
+        this.context = context;
+        
+        ListSwitchInit(context);
+        IfInit(context);
+        MonthSelectInit(context);
+        
+        dateExceptionInit(context);
+        timeExceptionInit(context);
+    }
+}
+
+;(function(window) {
+    window.Calendarize = Calendarize;
+})(window);
