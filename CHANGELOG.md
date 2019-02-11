@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.1 - 2019-02-11
+
+### Updated
+- Made sure all instance of the work occurrence were consisten.
+
 ## 1.2.0 - 2019-02-11
 
 ### Added
