@@ -283,29 +283,34 @@ class CalendarizeModel extends Model
      */
     public function rrule()
     {
-        // prevent direct call if doesnt repeat
-        if (!$this->repeats) {
-            throw new \Exception('Cannot use RRULE with non repeating values', 1);
-        }
-
         if (null === $this->occurrenceCache) {
-            $config = [
-                'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),
-                'INTERVAL'   => 1,
-                'DTSTART'    => $this->startDate,
-                'UNTIL'      => $this->endRepeat !== 'never' ? $this->endRepeatDate ?? $this->startDate : null
-            ];
-            
-            if ($this->endRepeat === 'never') {
-                $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
+            if ($this->repeats) {
+                $config = [
+                    'FREQ'       => strtoupper(static::$RRULEMAP[$this->repeatType]),
+                    'INTERVAL'   => 1,
+                    'DTSTART'    => $this->startDate,
+                    'UNTIL'      => $this->endRepeat !== 'never' ? $this->endRepeatDate ?? $this->startDate : null
+                ];
+                
+                if ($this->endRepeat === 'never') {
+                    $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 
-                if ($this->repeatType === 'yearly') {
-                    $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+5 years'));
-                } else {
-                    $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+1 year'));
+                    if ($this->repeatType === 'yearly') {
+                        $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+5 years'));
+                    } else {
+                        $config['UNTIL'] = DateTimeHelper::toDateTime($today->modify('+1 year'));
+                    }
                 }
+            } else {
+                $config = [
+                    'FREQ'       => "DAILY",
+                    'INTERVAL'   => 1,
+                    'DTSTART'    => $this->startDate,
+                    'UNTIL'      => $this->startDate
+                ];
+                $this->repeatType = 'daily';
             }
-
+            
             switch ($this->repeatType) {
                 case 'daily':
                 case 'yearly':
