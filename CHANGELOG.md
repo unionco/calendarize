@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.3 - 2019-02-12
+
+### Fixed
+- Fixed future occurrences from showing up in `between` date method. 
+
 ## 1.2.2 - 2019-02-11
 
 ### Fixed

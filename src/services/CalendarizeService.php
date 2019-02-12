@@ -105,10 +105,6 @@ class CalendarizeService extends Component
 			$fields = $entry->getFieldLayout()->getFields();
 			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
-
-			if (!$entry->{$fieldHandle}->repeats) {
-				$allOccurrences[] = new Occurrence($entry, $entry->{$fieldHandle}->startDate);
-			}
 			
 			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, null);
 			
@@ -163,12 +159,6 @@ class CalendarizeService extends Component
 			$fields = $entry->getFieldLayout()->getFields();
 			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
-
-			if (!$entry->{$fieldHandle}->repeats) {
-				if ($entry->{$fieldHandle}->startDate >= $start) {
-					$allOccurrences[] = new Occurrence($entry, $entry->{$fieldHandle}->startDate);
-				}
-			}
 			
 			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, null);
 			
