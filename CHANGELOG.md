@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.4 - 2019-02-13
+
+### Added
+- For backwards compatibility a __toString method was added to the Occurrence model.
+
 ## 1.2.3 - 2019-02-12
 
 ### Fixed

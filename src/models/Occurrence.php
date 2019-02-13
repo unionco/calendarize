@@ -58,6 +58,14 @@ class Occurrence
     /**
      * 
      */
+    public function __toString()
+    {
+        return $this->next->format('U');
+    }
+
+    /**
+     * 
+     */
     public function getType(): string
     {
         return (new ReflectionClass($this->element))->getShortName();
