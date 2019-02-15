@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.5 - 2019-02-14
+
+### Fixed
+- Fixing conditionals in template that were causing date selects to not save. Fixes [#15](https://github.com/unionco/calendarize/issues/15)
+
 ## 1.2.4 - 2019-02-13
 
 ### Added
