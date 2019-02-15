@@ -105,7 +105,7 @@
 
         <div class="calendar-row u-alignStart" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
-                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="weekly">
+                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="weekly" data-or-value="biweekly">
                     {% for day in daysOfWeek %}
                         {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
                         {% set labelId = 'label'~random() %}
@@ -127,7 +127,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="biweekly">
+                {# <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="biweekly">
                     {% for day in daysOfWeek %}
                         {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
                         {% set labelId = 'label'~random() %}
@@ -148,7 +148,7 @@
                             </label>
                         </div>
                     {% endfor %}
-                </div>
+                </div> #}
                 <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="monthly" data-monthly-select="{{ namespacedId }}-startDate-date">
                     {% set opts = [
                         { value: 'onDay', label: value.startDate ? value.startDate.format('jS') },
