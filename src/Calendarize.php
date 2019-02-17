@@ -25,6 +25,7 @@ use craft\web\View;
 use unionco\calendarize\fields\CalendarizeField;
 use unionco\calendarize\models\Settings;
 use unionco\calendarize\services\CalendarizeService;
+use unionco\calendarize\services\ICS;
 use unionco\calendarize\variables\CalendarizeVariable;
 use yii\base\Event;
 
@@ -81,8 +82,11 @@ class Calendarize extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        $this->controllerNamespace = 'unionco\calendarize\controllers';
+
         $this->setComponents([
-            'calendar' => CalendarizeService::class
+            'calendar' => CalendarizeService::class,
+            'ics' => ICS::class
         ]);
 
         // Base template directory

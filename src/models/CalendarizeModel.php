@@ -83,18 +83,18 @@ class CalendarizeModel extends Model
                     case 'startDate':
                     case 'endDate':
                     case 'endRepeatDate':
-                        $this->{$key} = isset($value) ? DateTimeHelper::toDateTime($value) : null;
+                        $this->{$key} = $this->_setDateType($value);
                         break;
                     case 'exceptions':
                         $value = is_string($value) ? Json::decode($value) : $value;
                         $this->{$key} = array_map(function ($e) {
-                            return DateTimeHelper::toDateTime($e);
+                            return $this->_setDateType($e);
                         }, $value ?? []);
                         break;
                     case 'timeChanges':
                         $value = is_string($value) ? Json::decode($value) : $value;
                         $this->{$key} = array_map(function ($e) {
-                            return DateTimeHelper::toDateTime($e);
+                            return $this->_setDateType($e);
                         }, $value ?? []);
                         break;
                     case 'days':
@@ -131,6 +131,16 @@ class CalendarizeModel extends Model
         }
         
         return '';
+    }
+
+    /**
+     * Bool if end date exist
+     * 
+     * @return bool
+     */
+    public function getOwner()
+    {
+        return $this->owner;
     }
 
     /**
@@ -352,6 +362,14 @@ class CalendarizeModel extends Model
     }
 
     /**
+     * 
+     */
+    public function getIcsUrl()
+    {
+        return "/actions/calendarize/default/make-ics?ownerId={$this->ownerId}&ownerSiteId={$this->ownerSiteId}&fieldId={$this->fieldId}";
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -393,5 +411,25 @@ class CalendarizeModel extends Model
         foreach ($occurrences as $key => $occurrence) {
             $occurrences[$key]->setTime($this->startDate->format('H'), $this->startDate->format('i'));
         }
+    }
+
+    /**
+     * 
+     */
+    private function _setDateType($value)
+    {
+        if (isset($value) && !empty($value)) {
+            if ($value instanceof DateTime) {
+                return $value;
+            }
+
+            if (is_array($value) && isset($value['timezone_type'])) {
+                // revision
+                $value = new DateTime($value['date'], new DateTimeZone($value['timezone']));
+            }
+
+            return DateTimeHelper::toDateTime($value);
+        }
+        return null;
     }
 }

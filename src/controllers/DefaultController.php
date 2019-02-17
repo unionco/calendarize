@@ -14,6 +14,9 @@ use unionco\calendarize\Calendarize;
 
 use Craft;
 use craft\web\Controller;
+use unionco\calendarize\records\CalendarizeRecord;
+use unionco\calendarize\models\CalendarizeModel;
+use craft\base\Element;
 
 /**
  * @author    Franco Valdes
@@ -31,7 +34,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = ['make-ics'];
 
     // Public Methods
     // =========================================================================
@@ -39,20 +42,25 @@ class DefaultController extends Controller
     /**
      * @return mixed
      */
-    public function actionIndex()
+    public function actionMakeIcs(int $ownerId, int $ownerSiteId, int $fieldId)
     {
-        $result = 'Welcome to the DefaultController actionIndex() method';
+        $record = CalendarizeRecord::findOne(
+			[
+				'ownerId'     => $ownerId,
+				'ownerSiteId' => $ownerSiteId,
+				'fieldId'     => $fieldId,
+			]
+        );
+        $owner = $record->getOwner()->one();
+        $element = $owner->type::find()
+            ->id($owner->id)
+            ->one();
 
-        return $result;
-    }
+        $model = new CalendarizeModel($element, $record->getAttributes());
+        $ics = Calendarize::$plugin->ics->make($model);
 
-    /**
-     * @return mixed
-     */
-    public function actionDoSomething()
-    {
-        $result = 'Welcome to the DefaultController actionDoSomething() method';
+        $response = Craft::$app->getResponse();
 
-        return $result;
+        return $response->sendFile($ics, null, ['inline' => true]);
     }
 }

@@ -16,26 +16,26 @@
 {% import "calendarize/_includes/forms" as forms %}
 
 {% set daysOfWeek = [
-    { value: 0, label: 'Sun' },
-    { value: 1, label: 'Mon' },
-    { value: 2, label: 'Tue' },
-    { value: 3, label: 'Wed' },
-    { value: 4, label: 'Thu' },
-    { value: 5, label: 'Fri' },
-    { value: 6, label: 'Sat' },
+    { value: 0, label: 'Sun'|t("calendarize") },
+    { value: 1, label: 'Mon'|t("calendarize") },
+    { value: 2, label: 'Tue'|t("calendarize") },
+    { value: 3, label: 'Wed'|t("calendarize") },
+    { value: 4, label: 'Thu'|t("calendarize") },
+    { value: 5, label: 'Fri'|t("calendarize") },
+    { value: 6, label: 'Sat'|t("calendarize") },
 ] %}
 
 {% set endOptions = [
-    { value: 'never', label: 'Never' },
-    { value: 'date', label: 'On Date' }
+    { value: 'never', label: 'Never'|t("calendarize") },
+    { value: 'date', label: 'On Date'|t("calendarize") }
 ] %}
 
 {% set repeatOptions = [
-    { value: 'daily', label: 'Daily' },
-    { value: 'weekly', label: 'Weekly' },
-    { value: 'biweekly', label: 'Biweekly (every 2 weeks)' },
-    { value: 'monthly', label: 'Monthly' },
-    { value: 'yearly', label: 'Yearly' },
+    { value: 'daily', label: 'Daily'|t("calendarize") },
+    { value: 'weekly', label: 'Weekly'|t("calendarize") },
+    { value: 'biweekly', label: 'Biweekly (every 2 weeks)'|t("calendarize") },
+    { value: 'monthly', label: 'Monthly'|t("calendarize") },
+    { value: 'yearly', label: 'Yearly'|t("calendarize") },
 ] %}
 
 <div class="calendar-wrapper">
@@ -44,7 +44,7 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.lightswitchField({
-                        label: 'All Day',
+                        label: 'All Day'|t("calendarize"),
                         id: name ~ '-allDay',
                         name: name ~ '[allDay]',
                         value: ( value.allDay ?? false ),
@@ -81,7 +81,7 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.lightswitchField({
-                        label: 'Repeats',
+                        label: 'Repeats'|t("calendarize"),
                         id: name ~ '-repeats',
                         name: name ~ '[repeats]',
                         value: ( value.repeats ?? false ),
@@ -94,7 +94,7 @@
                 {{ 
                     forms.selectField({
                         id: name ~ '-repeatType',
-                        label: 'Every',
+                        label: 'Every'|t("calendarize"),
                         name: name ~ '[repeatType]',
                         value: ( value.repeatType ?? false ),
                         options: repeatOptions
@@ -127,28 +127,6 @@
                         </div>
                     {% endfor %}
                 </div>
-                {# <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="biweekly">
-                    {% for day in daysOfWeek %}
-                        {% set fieldName = name ~ '[days][' ~ day.value ~ ']' %}
-                        {% set labelId = 'label'~random() %}
-                        {% set selected = false %}
-
-                        {% if value is not null and value.days | length %}
-                            {% if day.value in value.days | keys %}
-                                {% set selected = true %}
-                            {% endif %}
-                        {% endif %}
-                        
-                        <div class="day" id="fields-calendarDays-field">
-                            <label for="{{labelId}}">
-                                <input type="checkbox" id="{{labelId}}" name="{{ fieldName }}" {% if selected -%}checked{%- endif %}/>
-                                <div class="day-box">
-                                    {{ day.label }}
-                                </div>
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div> #}
                 <div class="calendar-row-days" data-if="{{ namespacedId }}-repeatType" data-if-value="monthly" data-monthly-select="{{ namespacedId }}-startDate-date">
                     {% set opts = [
                         { value: 'onDay', label: value.startDate ? value.startDate.format('jS') },
@@ -157,7 +135,7 @@
                     {{ 
                         forms.selectField({
                             id: name ~ 'Months',
-                            label: 'Every month on the',
+                            label: 'Every month on the'|t("calendarize"),
                             name: name ~ '[months]',
                             value: ( value.months ?? false ),
                             options: opts
@@ -201,7 +179,7 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.dateField({
-                        label: 'Date Exceptions',
+                        label: 'Date Exceptions'|t("calendarize"),
                         id: name ~ 'Exceptions',
                         name: name ~ '[exceptions]',
                         value: null
@@ -227,7 +205,7 @@
             <div class="calendar-row-item">
                 {{ 
                     forms.dateTimeField({
-                        label: 'Time Exceptions',
+                        label: 'Time Exceptions'|t("calendarize"),
                         id: name ~ 'TimeChanges',
                         name: name ~ '[timeChanges]',
                         value: null,
@@ -264,7 +242,7 @@
             </p>
             {% if value.repeats %}
                 <ul>
-                    <li>Occurrences:</li>
+                    <li>{{'Occurrences'|t("calendarize")}}:</li>
                     {% for occurrence in value.getOccurrences(10) %}
                         <li>{{ occurrence.format('m/d/Y @ h:i:s a') }}</li>
                     {% endfor %}

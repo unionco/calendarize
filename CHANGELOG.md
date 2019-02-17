@@ -1,5 +1,15 @@
 # Calendarize Changelog
 
+## 1.2.6 - 2019-02-17
+
+### Added 
+- Craft translate methods to cp templates to allow for locale translations (#4)[https://github.com/unionco/calendarize/issues/4]
+- ICS url helper method to get the controller action to create a downloadable calendar file
+- ICS controller action downloads a .ics file
+
+### Fixed
+- Fixed issue where reverting to an old entry would lose field data (#11)[https://github.com/unionco/calendarize/issues/11]
+
 ## 1.2.5 - 2019-02-14
 
 ### Fixed

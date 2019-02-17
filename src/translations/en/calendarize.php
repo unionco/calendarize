@@ -15,4 +15,27 @@
  */
 return [
     'Calendarize plugin loaded' => 'Calendarize plugin loaded',
+    'Sun' => 'Sun',
+    'Mon' => 'Mon',
+    'Tue' => 'Tue',
+    'Wed' => 'Wed',
+    'Thu' => 'Thu',
+    'Fri' => 'Fri',
+    'Sat' => 'Sat',
+    'Never' => 'Never',
+    'On Date' => 'On Date',
+    'Daily' => 'Daily',
+    'Weekly' => 'Weekly',
+    'Biweekly (every 2 weeks)' => 'Biweekly (every 2 weeks)',
+    'Monthly' => 'Monthly',
+    'Yearly' => 'Yearly',
+    'All Day' => 'All Day',
+    'Repeats' => 'Repeats',
+    'Every' => 'Every',
+    'Every month on the' => 'Every month on the',
+    'Date Exceptions' => 'Date Exceptions',
+    'Time Exceptions' => 'Time Exceptions',
+    'Occurrences' => 'Occurrences',
+    'Last Occurrence' => 'Last Occurrence',
+    'Next Occurrence' => 'Next Occurrence'
 ];

@@ -163,13 +163,13 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
             return '-';
         }
         
-        $hr = $value->readable();
+        $hr = $value->readable(['locale' => Craft::$app->locale->id]);
         $html = "<span title=\"{$hr}\">";
         
         if ($value->hasPassed()) {
-            $html .= "<b>Last Occurrence:</b>";
+            $html .= "<b>" . Craft::t('calendarize', 'Last Occurrence') . ":</b>";
         } else {
-            $html .= "<b>Next Occurrence:</b>";
+            $html .= "<b>" . Craft::t('calendarize', 'Next Occurrence') . ":</b>";
         }
 
         $html .= "<br/>" . $value->next()->format('l, m/d/Y @ h:i:s a');

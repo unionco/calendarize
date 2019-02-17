@@ -76,7 +76,7 @@ class CalendarizeService extends Component
             default: return "th";
         }
 	}
-	
+
 	/**
 	 * Get entries with future occurrence of date
 	 * 

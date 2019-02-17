@@ -3,10 +3,12 @@
 # Calendarize Field Type plugin for Craft CMS 3.x
 This plugin adds a calendarize field type that provides an interface to have repeating dates just like on a calendar interface. Repeat daily, weekly, and monthly with multiple other configurations per repeat type. Also comes with the ability add exception dates.
 
+---
 ## Requirements
 
 This plugin requires Craft CMS 3.0.0-beta.23 or later and PHP7+.
 
+---
 ## Installation
 
 To install the plugin, follow these instructions.
@@ -21,6 +23,7 @@ To install the plugin, follow these instructions.
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Calendarize.
 
+---
 ## Calendarize Overview
 
 Configuration is as follows:
@@ -28,7 +31,7 @@ Configuration is as follows:
 2. End Date - Datetime field
 3. All Day - Lightswitch
 4. Repeats - Lightswitch
-5. Repeat Type - Dropdown [Daily, Weekly, BiWeekly, Monthly]
+5. Repeat Type - Dropdown [Daily, Weekly, BiWeekly, Monthly, Yearly]
 6. Week Selector - Checkboxes
 7. Monthly Selector - Dropdown [On the date, On the weekday of month]
 8. Repeat Ends - Dropdown [Never, On Date]
@@ -38,47 +41,109 @@ Configuration is as follows:
 
 ![Screenshot](resources/img/field-layout.png)
 
-## Using Calendarize
+---
+## Usage
 
-In your twig templates you can access the calendarize field as you would with any other field.
+There are two ways to use the calendarize field in your templates.
 
-1. Normal sub field access
+### Normal craft queries
 
-        {{ event.calendarizeHandle.startDate.format('Y-m-d') }}
-        {{ event.calendarizeHandle.repeats }}
-        ...
+- When querying entries from craft you have the ability to access the calendarize field as you would with any other field.
 
-2. Added functionality
+        {% set events = craft.entries({ section: 'events' }).all %}
+        {% for event in events %}
+            {{ event.calendarizeHandle|date('Y-m-d' }} // __toString returns the next occurrence
+            {{ event.calendarizeHandle.next|date('Y-m-d') }} // same as above
+            {{ event.calendarizeHandle.startDate|date('Y-m-d') }} // original start date
+            {{ event.calendarizeHandle.endDate|date('Y-m-d') }} // original end date
+            {{ event.calendarizeHandle.ends }} // boolean if repeat ends
+            {{ event.calendarizeHandle.repeats }} // boolean if entry repeats
+            {{ event.calendarizeHandle.allDay }} // boolean all day entry
+            {{ event.calendarizeHandle.repeatType }} // string type of repeat
+            {{ event.calendarizeHandle.hasPassed }} // boolean if entry next occurrence has passed
+            {{ event.calendarizeHandle.readable }} // string see rrule for more information
+            {{ event.calendarizeHandle.getIcsUrl }} // url to ics controller action
+        {% endfor %}
 
-        {{ event.calendarizeHandle.next.format('Y-m-d') }} // next occurence
-        {{ event.calendarizeHandle.ends }} // boolean if it ends on date
-        {{ event.calendarizeHandle.readable }} // readable string of the occurence
-        
-3. RRule functionality
+- There is also a few added methods to help get all occurrences for repeating entries. These helpers will return an array of `Occurrence` models.
 
-        {{ event.calendarizeHandle.rrule }} 
-        {{ event.calendarizeHandle.getOccurrences(limit) }}
-        {{ event.calendarizeHandle.getOccurrencesBetween(start, end, limit) }}
+        {% set occurrences = event.calendarizeHandle.getOccurrences(limit = 10) %}
+        {% set occurrences = event.calendarizeHandle.getOccurrencesBetween(start, end, limit = 1) %}
+        {% for occurrence in occurrences %}
+            {{ occurrence.next|date('Y-m-d') }}
+        {% endfor %}
 
-4. Added Query functionality through craft variables
-    - This queries entries with calendarize fields with upcoming occurrences. Can take any normal criteria and order (asc, desc). Returns array of entries.
+### The calendarize query way
 
-            {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
+- Using the calendarize query variable will return all occurrences for all entries that match your criteria. This query returns an array of `Occurrence` models. You still have access to the parent element as you would with the craft query way. 
+
+        {% set monthStart = '2022-01-01' %}
+        {% set monthEnd = '2022-01-31' %}
+        {% set occurrences = craft.calendarize.between(monthStart, monthEnd, { section: ['liveShows'] }) %}
+        {% for occurrence in occurrences %}
+            {{ occurrence.title }} @ {{ occurrence.next | date('Y-m-d') }}
+        {% endfor %}
+
+### Other Examples:
+- This queries entries with calendarize fields with upcoming occurrences. Can take any normal criteria and order (asc, desc). Returns array of entries.
+
+        {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
+
+- This queries entries with calendarize fields with occurrences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
     
-    - This queries entries with calendarize fields with occurrences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
-    
-            {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
+        {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
 
-    - This queries entries with calendarize fields with occurrences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
+- This queries entries with calendarize fields with occurrences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
     
-            {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, 'asc|desc') %}
+        {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, 'asc|desc') %}
 
-### Dependencies 
+---
+## Models
+### Calendarize Model
+
+- Private Properties
+    - owner
+- Public Properties
+    - ownerId
+    - ownerSiteId
+    - fieldId
+    - startDate
+    - endDate
+    - allDay
+    - repeats
+    - days
+    - endRepeat
+    - endRepeatDate
+    - exceptions
+    - timeChanges
+    - repeatType
+    - months
+- Public Methods
+    - `getOwner(): Element`
+    - `ends(): bool`
+    - `next(): DateTime`
+    - `getOccurrences($limit = 10): Occurrence[]`
+    - `getOccurrencesBetween($startDate, $endDate = null, $limit = 1): Occurrence[]`
+    - `hasPassed(): bool`
+    - `readable(array $opts = []): string`
+    - `rrule(): RSet`
+    - `getIcsUrl(): string`
+
+### Occurrence Model
+
+- Public Properties
+    - element
+    - next
+- Public Methods
+    - `getType(): string`
+
+---
+## Dependencies 
 
 - RRULE
-    This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurrences` method returns all occurrences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
+    - This plugin leverages the use of the PHP RRule library. Docs for this can be found here [PHP RRule](https://github.com/rlanvin/php-rrule). The `rrule` method returns the pre configured rrule with all its available methods. In addition, the `getOccurrences` method returns all occurrences of the entry with a `limit` of 10 by default and the `getOccurrencesBetween` returns the occurence between 2 dates. If the end date is null, it will not enforce the end date and give all occurence greater than the start date provided.
 
-
+---
 ## Calendarize Roadmap
 
 ### Matrix Support
