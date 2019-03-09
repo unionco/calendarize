@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.7 - 2019-03-09
+
+### Fixed
+- Fixing up the docs (#18)[https://github.com/unionco/calendarize/issues/18]
+
 ## 1.2.6 - 2019-02-17
 
 ### Added 

@@ -67,8 +67,8 @@ There are two ways to use the calendarize field in your templates.
 
 - There is also a few added methods to help get all occurrences for repeating entries. These helpers will return an array of `Occurrence` models.
 
-        {% set occurrences = event.calendarizeHandle.getOccurrences(limit = 10) %}
-        {% set occurrences = event.calendarizeHandle.getOccurrencesBetween(start, end, limit = 1) %}
+        {% set occurrences = event.calendarizeHandle.getOccurrences(limit) %} {# limit is optional and defaults to 10 #}
+        {% set occurrences = event.calendarizeHandle.getOccurrencesBetween(start, end, limit) %} {# limit is optional and defaults to 1 #}
         {% for occurrence in occurrences %}
             {{ occurrence.next|date('Y-m-d') }}
         {% endfor %}
