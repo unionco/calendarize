@@ -1,5 +1,13 @@
 # Calendarize Changelog
 
+## 1.2.8 - 2019-03-21
+
+### Added
+- New "unique" parameter added to all calendarize methods (after|between|upcoming) that will limit occurrences to 1 per entry instead of listing all the occurrences. Read me will reflect new signature. (#17)[https://github.com/unionco/calendarize/issues/17]
+
+### Fixed
+- Fixed a query issue when using the search criteria param (#21)[https://github.com/unionco/calendarize/issues/21]
+
 ## 1.2.7 - 2019-03-09
 
 ### Fixed

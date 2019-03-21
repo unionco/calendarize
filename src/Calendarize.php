@@ -11,11 +11,17 @@
 namespace unionco\calendarize;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Plugin;
+use craft\elements\Entry;
+use craft\elements\db\ElementQuery;
+use craft\elements\db\EntryQuery;
+use craft\events\CancelableEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterElementSortOptionsEvent;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
@@ -117,6 +123,39 @@ class Calendarize extends Plugin
                 $variable->set('calendarize', CalendarizeVariable::class);
             }
         );
+
+        /**
+         * Adding Sort Options
+         */
+        // Event::on(
+        //     Entry::class, 
+        //     Element::EVENT_REGISTER_SORT_OPTIONS, 
+        //     function(RegisterElementSortOptionsEvent $event) {
+        //         $event->sortOptions[] = [
+        //             'label' => 'Calendarize | Start Date',
+        //             'orderBy' => 'calendarize.startDate'
+        //         ];
+        //     }
+        // );
+
+        /**
+         * Modifying query when sorting by calendarize
+         */
+        // Event::on(
+        //     ElementQuery::class,
+        //     ElementQuery::EVENT_BEFORE_PREPARE,
+        //     function(CancelableEvent $event) {
+        //         $query = $event->sender;
+        //         if ($query instanceof EntryQuery) {
+        //             if (isset($query->orderBy['calendarize.startDate'])) {
+        //                 $direction = $query->orderBy['calendarize.startDate'];
+        //                 unset($query->orderBy['calendarize.startDate']);
+        //                 $query->join[] = ['JOIN', '{{%calendarize}} calendarize', '[[entries.id]] = [[calendarize.ownerId]]'];
+        //                 $query->orderBy['calendarize.startDate'] = $direction;
+        //             }
+        //         }
+        //     }
+        // );
 
         Craft::info(
             Craft::t(

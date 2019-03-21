@@ -86,7 +86,7 @@ class CalendarizeService extends Component
 	 * 
 	 * @return occurances array
 	 */
-	public function after($date, $criteria = [], $order = 'asc')
+	public function after($date, $criteria = [], $order = 'asc', $unique = false)
 	{
 		if (is_string($date)) {
 			$date = DateTimeHelper::toDateTime(new DateTime($date, new DateTimeZone(Craft::$app->getTimeZone())));
@@ -106,7 +106,7 @@ class CalendarizeService extends Component
 			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
 			
-			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, null);
+			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($date, null, $unique ? 1 : null);
 			
 			if ($occurrences) {
 				foreach ($occurrences as $key => $occurrence) {
@@ -136,7 +136,7 @@ class CalendarizeService extends Component
 	 * 
 	 * @return occurances array
 	 */
-	public function between($start, $end, $criteria = [], $order = 'asc')
+	public function between($start, $end, $criteria = [], $order = 'asc', $unique = false)
 	{
 		if (is_string($start)) {
 			$start = DateTimeHelper::toDateTime(new DateTime($start, new DateTimeZone(Craft::$app->getTimeZone())));
@@ -160,7 +160,7 @@ class CalendarizeService extends Component
 			$fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) { return get_class($field); }, $fields));
 			$fieldHandle = $fields[$fieldIndex]->handle;
 			
-			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, null);
+			$occurrences = $entry->{$fieldHandle}->getOccurrencesBetween($start, $end, $unique ? 1 : null);
 			
 			if ($occurrences) {
 				foreach ($occurrences as $key => $occurrence) {
@@ -188,11 +188,11 @@ class CalendarizeService extends Component
 	 * 
 	 * @return occurances array
 	 */
-	public function upcoming($criteria = [], $order = 'asc')
+	public function upcoming($criteria = [], $order = 'asc', $unique = false)
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-		
-		return $this->after($today, $criteria, $order);
+
+		return $this->after($today, $criteria, $order, $unique);
 	}
 
 	/**
@@ -206,50 +206,41 @@ class CalendarizeService extends Component
 	{
 		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
-		$limit = null;
-		$tableName = CalendarizeRecord::$tableName;
-		$tableAlias = 'calendarize' . bin2hex(openssl_random_pseudo_bytes(5));
-		$on = [
-			'and',
-			'[[elements.id]] = [['.$tableAlias.'.ownerId]]',
-			'[[elements_sites.siteId]] = [['.$tableAlias.'.ownerSiteId]]',
-		];
 
 		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
-			$query = Entry::find();
-			
-			$query->join(
-				'JOIN',
-				"{$tableName} {$tableAlias}",
-				$on
-			);
-
+			$query = CalendarizeRecord::find();
+			$query->select = ['ownerId'];
 			$query->where([
 				'and',
 				[
+					"ownerSiteId" => Craft::$app->getSites()->getCurrentSite()->id
+				],
+				[
 					'not', 
-					[ $tableAlias . ".startDate" => null ]
+					[ "startDate" => null ]
 				],
 				[
 					'or',
 					[
 						'and',
-						[ '=', $tableAlias . ".endRepeat", 'date' ],
-						[ '>=', $tableAlias . ".endRepeatDate", Db::prepareDateForDb($today) ],
+						[ '=', "endRepeat", 'date' ],
+						[ '>=', "endRepeatDate", Db::prepareDateForDb($today) ],
 					],
-					[ '=', $tableAlias . ".endRepeat", 'never' ],
+					[ '=', "endRepeat", 'never' ],
 					[
 						'and',
-						[ '=', $tableAlias . ".repeats", 0 ],
-						[ '>=', $tableAlias . ".startDate", Db::prepareDateForDb($today) ],
+						[ '=', "repeats", 0 ],
+						[ '>=', "startDate", Db::prepareDateForDb($today) ],
 					]
 				]
 			]);
-					
-			// configure the rest of the query
-			Craft::configure($query, $criteria);
+			
+			// configure the entry query
+			$entryQuery = Entry::find();
+			$entryQuery->where(['in', 'elements.id', $query->column()]);
+			Craft::configure($entryQuery, $criteria);
 
-			$this->entryCache[$cacheHash] = $query->all();
+			$this->entryCache[$cacheHash] = $entryQuery->all();
 		}
 		
 		return $this->entryCache[$cacheHash];

@@ -46,9 +46,9 @@ class CalendarizeVariable
      * 
      * @return array Occurance[]
      */
-    public function upcoming($criteria = [], $order = "asc")
+    public function upcoming($criteria = [], $order = "asc", $unique = false)
     {
-        return Calendarize::$plugin->calendar->upcoming($criteria, $order);
+        return Calendarize::$plugin->calendar->upcoming($criteria, $order, $unique);
     }
 
     /**
@@ -60,9 +60,9 @@ class CalendarizeVariable
      * 
      * @return array Occurance[]
      */
-    public function after($date = null, $criteria = [], $order = "asc")
+    public function after($date = null, $criteria = [], $order = "asc", $unique = false)
     {
-        return Calendarize::$plugin->calendar->after($date, $criteria, $order);
+        return Calendarize::$plugin->calendar->after($date, $criteria, $order, $unique);
     }
 
     /**
@@ -75,8 +75,8 @@ class CalendarizeVariable
      * 
      * @return array Occurance[]
      */
-    public function between($start, $end, $criteria = [], $order = "asc")
+    public function between($start, $end, $criteria = [], $order = "asc", $unique = false)
     {
-        return Calendarize::$plugin->calendar->between($start, $end, $criteria, $order);
+        return Calendarize::$plugin->calendar->between($start, $end, $criteria, $order, $unique);
     }
 }

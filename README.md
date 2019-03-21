@@ -85,17 +85,23 @@ There are two ways to use the calendarize field in your templates.
         {% endfor %}
 
 ### Other Examples:
-- This queries entries with calendarize fields with upcoming occurrences. Can take any normal criteria and order (asc, desc). Returns array of entries.
+- This queries entries with calendarize fields with upcoming occurrences. Can take any normal criteria, order (asc, desc) and a unique parameter. The unique param will limit occurrences to 1 per entry instead of listing all the occurrences. Returns array of entries.
 
-        {% set entries = craft.calendarize.upcoming({ section: ['events'] }, 'asc|desc') %}
+        {% set order = 'asc' %} // defaults to asc
+        {% set unique = true %} // defaults to false 
+        {% set entries = craft.calendarize.upcoming({ section: ['events'] }, order, unique) %}
 
-- This queries entries with calendarize fields with occurrences after the provided date. Can take any normal criteria as the second argument. Returns array of entries.
+- This queries entries with calendarize fields with occurrences after the provided date. Can take any normal criteria, order and a unique parameter. The unique param will limit occurrences to 1 per entry instead of listing all the occurrences.. Returns array of entries.
     
-        {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, 'asc|desc') %}
+        {% set order = 'asc' %} // defaults to asc
+        {% set unique = true %} // defaults to false 
+        {% set entries = craft.calendarize.after('2019-01-04', { section: ['events'] }, order, unique) %}
 
-- This queries entries with calendarize fields with occurrences between the provided dates. Can take any normal criteria as the second argument. Returns array of entries.
+- This queries entries with calendarize fields with occurrences between the provided dates. Can take any normal criteria, order and a unique parameter. The unique param will limit occurrences to 1 per entry instead of listing all the occurrences.. Returns array of entries.
     
-        {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, 'asc|desc') %}
+        {% set order = 'asc' %} // defaults to asc
+        {% set unique = true %} // defaults to false 
+        {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, order, unique) %}
 
 ---
 ## Models
