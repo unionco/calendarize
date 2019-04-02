@@ -35,8 +35,21 @@ use unionco\calendarize\records\CalendarizeRecord;
  */
 class ICS extends Component
 {
+    public function getUrl(CalendarizeModel $model)
+    {
+        return "/actions/calendarize/default/make-ics?ownerId={$model->ownerId}&ownerSiteId={$model->ownerSiteId}&fieldId={$model->fieldId}";
+    }
+
+    public function getCalendarIcsUrl(CalendarizeModel $model, $relatedTo = null, $filename = null)
+    {
+        $sectionId = $model->getOwner()->getsection()->id;
+        $fieldId = $model->fieldId;
+        $siteId = $model->ownerSiteId;
+        return "/actions/calendarize/default/make-section-ics?sectionId={$sectionId}&siteId={$siteId}&fieldId={$fieldId}&relatedTo={$relatedTo}&filename={$filename}";
+    }
+
     /**
-	 * 
+	 *
 	 */
 	public function make(CalendarizeModel $model)
 	{
@@ -46,27 +59,60 @@ class ICS extends Component
 		$cal = "BEGIN:VCALENDAR\n".
                 "VERSION:2.0\n".
                 "PRODID:-//CALENDARIZE Craft //EN\n".
-                "BEGIN:VEVENT\n".
-                $rule->rfcString()."\n".
-                "DTEND;TZID=". $model->endDate->getTimezone()->getName().":". $model->endDate->format('Ymd\THis') ."\n".
-                "SUMMARY:".$this->_escapeString($owner->title)."\n".
-                "DESCRIPTION:\n".
-                "URL;VALUE=URI:".$owner->url."\n".
-                "UID:".uniqid()."\n".
-                "DTSTAMP:".$this->_dateToCal()."\n".
-                "END:VEVENT\n".
+                $this->_makeEvent($model);
                 "END:VCALENDAR\n";
-        
+
         $storage = Craft::$app->getPath()->getStoragePath();
         $path = $storage . "/calendarize/" . $owner->slug . ".ics";
         $file = FileHelper::writeToFile($path, $cal);
-        
+
         return $path;
     }
-    
+
+    /**
+     *
+     */
+    public function makeEvents($events, $filename)
+    {
+
+        $cal = "BEGIN:VCALENDAR\n".
+            "VERSION:2.0\n".
+            "PRODID:-//CALENDARIZE Craft //EN\n";
+
+        foreach($events as $events) {
+            $cal .= $this->_makeEvent($events);
+        }
+
+        $cal .= "END:VCALENDAR\n";
+
+        $storage = Craft::$app->getPath()->getStoragePath();
+        $path = $storage . "/calendarize/" . $filename . ".ics";
+        $file = FileHelper::writeToFile($path, $cal);
+
+        return $path;
+    }
+
+    private function _makeEvent(CalendarizeModel $model)
+    {
+        $owner = $model->getOwner();
+        $rule = $model->rrule()->getRRules()[0];
+
+        $ics = "BEGIN:VEVENT\n".
+        $rule->rfcString()."\n".
+        "DTEND;TZID=". $model->endDate->getTimezone()->getName().":". $model->endDate->format('Ymd\THis') ."\n".
+        "SUMMARY:".$this->_escapeString($owner->title)."\n".
+        "DESCRIPTION:\n".
+        "URL;VALUE=URI:".$owner->url."\n".
+        "UID:".uniqid()."\n".
+        "DTSTAMP:".$this->_dateToCal()."\n".
+        "END:VEVENT\n";
+
+        return $ics;
+    }
+
     /**
 	 * Generate the specific date markup for a ics file
-	 * 
+	 *
 	 * @param  integer $timestamp Timestamp to be transformed
 	 * @return string
 	 */
@@ -80,7 +126,7 @@ class ICS extends Component
 	}
 	/**
 	 * Escape characters
-	 * 
+	 *
 	 * @param  string $string String to be escaped
 	 * @return string
 	 */

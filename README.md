@@ -103,6 +103,16 @@ There are two ways to use the calendarize field in your templates.
         {% set unique = true %} // defaults to false 
         {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, order, unique) %}
 
+
+### Getting ICS URLs
+
+- For a single event: 
+ 
+        <a href="{{ event.getIcsUrl }}">Add to Calendar</a>
+        
+- For all events in a calendar: 
+ 
+        <a href="{{ event.getCalendarIcsUrl }}">Subscribe</a>
 ---
 ## Models
 ### Calendarize Model

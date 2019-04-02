@@ -28,9 +28,9 @@ class CalendarizeVariable
 
     /**
      * Get week month text
-     * 
+     *
      * @param date date
-     * 
+     *
      * @return string
      */
     public function weekMonthText($date)
@@ -40,10 +40,10 @@ class CalendarizeVariable
 
     /**
      * Get upcoming entries
-     * 
+     *
      * @param criteria ElementCriteria
      * @param order string
-     * 
+     *
      * @return array Occurance[]
      */
     public function upcoming($criteria = [], $order = "asc", $unique = false)
@@ -53,11 +53,11 @@ class CalendarizeVariable
 
     /**
      * Get entries after date
-     * 
+     *
      * @param date date
      * @param criteria ElementCriteria
      * @param order string
-     * 
+     *
      * @return array Occurance[]
      */
     public function after($date = null, $criteria = [], $order = "asc", $unique = false)
@@ -67,12 +67,12 @@ class CalendarizeVariable
 
     /**
      * Get entries between two dates
-     * 
+     *
      * @param start string|date
      * @param end string|date
      * @param criteria ElementCriteria
      * @param order string
-     * 
+     *
      * @return array Occurance[]
      */
     public function between($start, $end, $criteria = [], $order = "asc", $unique = false)
