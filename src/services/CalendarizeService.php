@@ -127,7 +127,7 @@ class CalendarizeService extends Component
 	}
 
 	/**
-	 * Get entries with future occurrence of date
+	 * Get entries between two dates.
 	 * 
 	 * @param start string|date
 	 * @param end string|date
@@ -152,7 +152,7 @@ class CalendarizeService extends Component
 			unset($criteria['limit']);
 		}
 
-		$entries = $this->_entries($criteria);
+		$entries = $this->_entries($criteria, $start);
 		$allOccurrences = [];
 
 		foreach ($entries as $key => $entry) {
@@ -202,10 +202,13 @@ class CalendarizeService extends Component
 	 * 
 	 * @return entries array
 	 */
-	private function _entries($criteria = [])
+	private function _entries($criteria = [], $from = 'now')
 	{
-		$today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
-		$cacheHash = md5(($today->format('YmdH')) . (Json::encode($criteria)));
+		if (is_string($from)) {
+			$from = DateTimeHelper::toDateTime(new DateTime($from, new DateTimeZone(Craft::$app->getTimeZone())));
+		}
+		
+		$cacheHash = md5(($from->format('YmdH')) . (Json::encode($criteria)));
 
 		if (null === $this->entryCache || !isset($this->entryCache[$cacheHash])) {
 			$query = CalendarizeRecord::find();
@@ -224,13 +227,13 @@ class CalendarizeService extends Component
 					[
 						'and',
 						[ '=', "endRepeat", 'date' ],
-						[ '>=', "endRepeatDate", Db::prepareDateForDb($today) ],
+						[ '>=', "endRepeatDate", Db::prepareDateForDb($from) ],
 					],
 					[ '=', "endRepeat", 'never' ],
 					[
 						'and',
 						[ '=', "repeats", 0 ],
-						[ '>=', "startDate", Db::prepareDateForDb($today) ],
+						[ '>=', "startDate", Db::prepareDateForDb($from) ],
 					]
 				]
 			]);
