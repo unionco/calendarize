@@ -40,7 +40,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['make-ics'];
+    protected $allowAnonymous = ['make-ics', 'make-section-ics'];
 
     // Public Methods
     // =========================================================================
@@ -80,7 +80,6 @@ class DefaultController extends Controller
         $field = \craft\records\Field::findOne($fieldId);
         $fieldHandle = $field->handle;
         $section = Section::findOne($sectionId);
-        $filename = $filename ? $filename : $section->handle;
 
         $entries = Entry::find()
             ->sectionId($sectionId)

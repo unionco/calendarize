@@ -362,19 +362,25 @@ class CalendarizeModel extends Model
     }
 
     /**
+     * Return the ICS url for a specific event
+     * @param array $options
      *
+     * @return mixed
      */
-    public function getIcsUrl()
+    public function getIcsUrl($options = [])
     {
-        return Calendarize::$plugin->ics->getUrl($this);
+        return Calendarize::$plugin->ics->getUrl($this, $options);
     }
 
     /**
+     * Return the ICS for all events in the parent section
+     * @param array $options
      *
+     * @return mixed
      */
-    public function getCalendarIcsUrl($relatedTo, $filename)
+    public function getCalendarIcsUrl($options = [])
     {
-        return Calendarize::$plugin->ics->getCalendarIcsUrl($this, $relatedTo, $filename);
+        return Calendarize::$plugin->ics->getCalendarIcsUrl($this, $options);
     }
 
     /**

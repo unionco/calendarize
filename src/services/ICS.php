@@ -35,26 +35,51 @@ use unionco\calendarize\records\CalendarizeRecord;
  */
 class ICS extends Component
 {
-    public function getUrl(CalendarizeModel $model)
+
+    /**
+     * Return the ICS url for a specific event
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function getUrl(CalendarizeModel $model, $options)
     {
-        return "/actions/calendarize/default/make-ics?ownerId={$model->ownerId}&ownerSiteId={$model->ownerSiteId}&fieldId={$model->fieldId}";
+        $params = http_build_query([
+            'filename' => $filename = $options['filename'] ?? null,
+            'ownerId' => $model->ownerId,
+            'ownerSiteId' => $model->ownerSiteId,
+            'fieldId' => $model->fieldId
+        ]);
+        return "/actions/calendarize/default/make-ics?" . $params;
     }
 
-    public function getCalendarIcsUrl(CalendarizeModel $model, $relatedTo = null, $filename = null)
+    /**
+     * Return the ICS for all events in the parent section
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function getCalendarIcsUrl(CalendarizeModel $model, $options)
     {
-        $sectionId = $model->getOwner()->getsection()->id;
-        $fieldId = $model->fieldId;
-        $siteId = $model->ownerSiteId;
-        return "/actions/calendarize/default/make-section-ics?sectionId={$sectionId}&siteId={$siteId}&fieldId={$fieldId}&relatedTo={$relatedTo}&filename={$filename}";
+        $params = http_build_query([
+            'sectionId' => $model->getOwner()->getsection()->id,
+            'siteId' => $model->ownerSiteId,
+            'fieldId' => $model->fieldId,
+            'relatedTo' => $options['relatedTo'] ?? null,
+            'filename' => $options['filename'] ?? null
+        ]);
+
+        return "/actions/calendarize/default/make-section-ics?" . $params;
     }
 
     /**
 	 *
 	 */
-	public function make(CalendarizeModel $model)
+	public function make(CalendarizeModel $model, $filename = null)
 	{
         $owner = $model->getOwner();
         $rule = $model->rrule()->getRRules()[0];
+        $filename = $filename ? $filename : $owner->slug;
 
 		$cal = "BEGIN:VCALENDAR\n".
                 "VERSION:2.0\n".
@@ -63,7 +88,7 @@ class ICS extends Component
                 "END:VCALENDAR\n";
 
         $storage = Craft::$app->getPath()->getStoragePath();
-        $path = $storage . "/calendarize/" . $owner->slug . ".ics";
+        $path = $storage . "/calendarize/" . $filename . ".ics";
         $file = FileHelper::writeToFile($path, $cal);
 
         return $path;
@@ -72,12 +97,13 @@ class ICS extends Component
     /**
      *
      */
-    public function makeEvents($events, $filename)
+    public function makeEvents($events, $filename = null)
     {
 
         $cal = "BEGIN:VCALENDAR\n".
             "VERSION:2.0\n".
             "PRODID:-//CALENDARIZE Craft //EN\n";
+        $filename = $filename ? $filename : $event[0]->getOwner()->getsection()->slug;
 
         foreach($events as $events) {
             $cal .= $this->_makeEvent($events);
