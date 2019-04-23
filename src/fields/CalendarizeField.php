@@ -15,14 +15,8 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
 use craft\elements\db\ElementQueryInterface;
-use craft\helpers\DateTimeHelper;
-use craft\helpers\Db;
-use craft\helpers\Json;
-use DateTime;
 use unionco\calendarize\assetbundles\fieldbundle\FieldAssetBundle;
 use unionco\calendarize\Calendarize;
-use unionco\calendarize\models\CalendarizeModel;
-use yii\db\Schema;
 
 /**
  * @author    Franco Valdes

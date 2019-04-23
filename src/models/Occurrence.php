@@ -11,7 +11,6 @@
 namespace unionco\calendarize\models;
 
 use Craft;
-use craft\helpers\FileHelper;
 use craft\base\Element;
 use DateTime;
 use ReflectionClass;

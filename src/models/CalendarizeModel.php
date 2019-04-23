@@ -129,13 +129,13 @@ class CalendarizeModel extends Model
         if ($next = $this->next()) {
             return $next->format('m/d/Y h:i a');
         }
-        
+
         return '';
     }
 
     /**
      * Bool if end date exist
-     * 
+     *
      * @return bool
      */
     public function getOwner()
@@ -145,7 +145,7 @@ class CalendarizeModel extends Model
 
     /**
      * Bool if end date exist
-     * 
+     *
      * @return bool
      */
     public function ends()
@@ -155,7 +155,7 @@ class CalendarizeModel extends Model
 
     /**
      * Gets the next occurrence datetime
-     * 
+     *
      * @return datetime
      */
     public function next()
@@ -163,11 +163,11 @@ class CalendarizeModel extends Model
         if (empty($this->startDate) && empty($this->endDate)) {
             return false;
         }
-        
+
         $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
         $numericValueOfToday = $today->format('w');
         $days = $this->days;
-        
+
         // This event isnt in range just yet...
         if ($today->format('Y-m-d') < $this->startDate->format('Y-m-d')) {
             return new Occurrence($this->owner, $this->startDate);
@@ -204,9 +204,9 @@ class CalendarizeModel extends Model
 
     /**
      * Get next occurrences
-     * 
-     * @var int 
-     * 
+     *
+     * @var int
+     *
      * @return array
      */
     public function getOccurrences($limit = 10)
@@ -216,9 +216,9 @@ class CalendarizeModel extends Model
         }
 
         $occurrences = $this->rrule()->getOccurrences($limit);
-        
+
         $this->_adjustTimeChanges($occurrences);
-        
+
         return array_map(function($occurrence) {
             return new Occurrence($this->owner, $occurrence);
         }, $occurrences);
@@ -226,10 +226,10 @@ class CalendarizeModel extends Model
 
     /**
      * Get occurrences between two dates
-     * 
+     *
      * @param startDate string|Datetime
      * @param startDate string|Datetime
-     * 
+     *
      * @return array
      */
     public function getOccurrencesBetween($startDate, $endDate = null, $limit = 1)
@@ -257,7 +257,7 @@ class CalendarizeModel extends Model
 
     /**
      * Boolean if the element has passed
-     * 
+     *
      * @return boolean
      */
     public function hasPassed()
@@ -273,9 +273,9 @@ class CalendarizeModel extends Model
 
     /**
      * Gets the readable string from rrule
-     * 
+     *
      * @param opts array
-     * 
+     *
      * @return string
      */
     public function readable(array $opts = [])
@@ -288,7 +288,7 @@ class CalendarizeModel extends Model
 
     /**
      * Initial rrule for field params
-     * 
+     *
      * @return rrule
      */
     public function rrule()
@@ -301,7 +301,7 @@ class CalendarizeModel extends Model
                     'DTSTART'    => $this->startDate,
                     'UNTIL'      => $this->endRepeat !== 'never' ? $this->endRepeatDate ?? $this->startDate : null
                 ];
-                
+
                 if ($this->endRepeat === 'never') {
                     $today = DateTimeHelper::toDateTime(new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())));
 
@@ -320,7 +320,7 @@ class CalendarizeModel extends Model
                 ];
                 $this->repeatType = 'daily';
             }
-            
+
             switch ($this->repeatType) {
                 case 'daily':
                 case 'yearly':
@@ -342,7 +342,7 @@ class CalendarizeModel extends Model
                     }
                     break;
             }
-            
+
             $rset = new RSet();
             $rset->addRRule($config);
 
@@ -357,16 +357,30 @@ class CalendarizeModel extends Model
             // cache rset
             $this->occurrenceCache = $rset;
         }
-        
+
         return $this->occurrenceCache;
     }
 
     /**
-     * 
+     * Return the ICS url for a specific event
+     * @param array $options
+     *
+     * @return mixed
      */
-    public function getIcsUrl()
+    public function getIcsUrl($options = [])
     {
-        return "/actions/calendarize/default/make-ics?ownerId={$this->ownerId}&ownerSiteId={$this->ownerSiteId}&fieldId={$this->fieldId}";
+        return Calendarize::$plugin->ics->getUrl($this, $options);
+    }
+
+    /**
+     * Return the ICS for all events in the parent section
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function getCalendarIcsUrl($options = [])
+    {
+        return Calendarize::$plugin->ics->getCalendarIcsUrl($this, $options);
     }
 
     /**
@@ -381,7 +395,7 @@ class CalendarizeModel extends Model
     // =========================================================================
 
     /**
-     * 
+     *
      */
     private function _adjustTimeChanges(&$occurrences = [])
     {
@@ -403,7 +417,7 @@ class CalendarizeModel extends Model
     }
 
     /**
-     * 
+     *
      */
     private function _adjustTimes(&$occurrences = [])
     {
@@ -414,7 +428,7 @@ class CalendarizeModel extends Model
     }
 
     /**
-     * 
+     *
      */
     private function _setDateType($value)
     {

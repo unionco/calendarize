@@ -62,7 +62,8 @@ There are two ways to use the calendarize field in your templates.
             {{ event.calendarizeHandle.repeatType }} // string type of repeat
             {{ event.calendarizeHandle.hasPassed }} // boolean if entry next occurrence has passed
             {{ event.calendarizeHandle.readable }} // string see rrule for more information
-            {{ event.calendarizeHandle.getIcsUrl }} // url to ics controller action
+            {{ event.calendarizeHandle.getIcsUrl }} // url to ics controller action for a single eevent
+            {{ event.calendarizeHandle.getCalendarIcsUrl }} // url to ics controller action for all events in the section
         {% endfor %}
 
 - There is also a few added methods to help get all occurrences for repeating entries. These helpers will return an array of `Occurrence` models.
@@ -103,6 +104,23 @@ There are two ways to use the calendarize field in your templates.
         {% set unique = true %} // defaults to false 
         {% set entries = craft.calendarize.between('2019-01-01', '2019-01-31', { section: ['events'] }, order, unique) %}
 
+
+### Getting ICS URLs (advanced)
+
+- The following options can be passed to customize ICS files:
+
+- For a single event: 
+ 
+        <a href="{{ event.getIcsUrl({
+            filename: 'my-event' //Specify the filename for the generated ICS file
+        }) }}">Add to Calendar</a>
+        
+- For all events in a calendar: 
+ 
+        <a href="{{ event.getCalendarIcsUrl({
+            filename: 'my-calendar', //Specify the filename for the generated ICS file
+            relatedTo: 'category-id' //Only included events related to an element id
+        }) }}">Subscribe</a>
 ---
 ## Models
 ### Calendarize Model
@@ -133,7 +151,8 @@ There are two ways to use the calendarize field in your templates.
     - `hasPassed(): bool`
     - `readable(array $opts = []): string`
     - `rrule(): RSet`
-    - `getIcsUrl(): string`
+    - `getIcsUrl($options = [filename: string]): string`
+    - `getCalendarIcsUrl($options = [filename: string, relatedTo: int]): array`
 
 ### Occurrence Model
 
