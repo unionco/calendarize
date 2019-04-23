@@ -1,5 +1,11 @@
 # Calendarize Changelog
 
+## 1.2.9 - 2019-04-22
+
+### Added
+Allowing `between()` to pull entries from past dates. Thanks to (incraigulous)[https://github.com/incraigulous]
+Cleaned up use blocks to remove used classes
+
 ## 1.2.8 - 2019-03-21
 
 ### Added
