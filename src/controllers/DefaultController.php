@@ -10,18 +10,15 @@
 
 namespace unionco\calendarize\controllers;
 
+use Craft;
 use craft\base\Field;
 use craft\elements\Entry;
-use craft\records\FieldLayout;
+use craft\records\Field as FieldRecord;
 use craft\records\Section;
-use unionco\calendarize\Calendarize;
-
-use Craft;
 use craft\web\Controller;
-use unionco\calendarize\records\CalendarizeRecord;
+use unionco\calendarize\Calendarize;
 use unionco\calendarize\models\CalendarizeModel;
-use craft\base\Element;
-use unionco\calendarize\services\CalendarizeService;
+use unionco\calendarize\records\CalendarizeRecord;
 use unionco\calendarize\services\ICS;
 
 /**
@@ -77,7 +74,7 @@ class DefaultController extends Controller
      */
     public function actionMakeSectionIcs(int $sectionId, int $siteId, int $fieldId, $relatedTo = null, $filename = null)
     {
-        $field = \craft\records\Field::findOne($fieldId);
+        $field = FieldRecord::findOne($fieldId);
         $fieldHandle = $field->handle;
         $section = Section::findOne($sectionId);
 

@@ -15,7 +15,6 @@ use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
-use craft\elements\MatrixBlock;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\Json;
@@ -24,7 +23,6 @@ use DateTimeZone;
 use unionco\calendarize\Calendarize;
 use unionco\calendarize\fields\CalendarizeField;
 use unionco\calendarize\models\CalendarizeModel;
-use unionco\calendarize\models\Occurrence;
 use unionco\calendarize\records\CalendarizeRecord;
 
 /**

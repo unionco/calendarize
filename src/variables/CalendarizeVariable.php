@@ -11,10 +11,7 @@
 namespace unionco\calendarize\variables;
 
 use Craft;
-use craft\elements\Entry;
-use craft\elements\MatrixBlock;
 use unionco\calendarize\Calendarize;
-use unionco\calendarize\models\CalendarizeModel;
 
 /**
  * @author    Franco Valdes

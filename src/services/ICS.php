@@ -12,21 +12,11 @@ namespace unionco\calendarize\services;
 
 use Craft;
 use craft\base\Component;
-use craft\base\ElementInterface;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\Entry;
-use craft\elements\MatrixBlock;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\FileHelper;
-use craft\helpers\Db;
-use craft\helpers\Json;
 use DateTime;
 use DateTimeZone;
 use unionco\calendarize\Calendarize;
-use unionco\calendarize\fields\CalendarizeField;
 use unionco\calendarize\models\CalendarizeModel;
-use unionco\calendarize\models\Occurrence;
-use unionco\calendarize\records\CalendarizeRecord;
 
 /**
  * @author    Franco Valdes
@@ -62,7 +52,7 @@ class ICS extends Component
     public function getCalendarIcsUrl(CalendarizeModel $model, $options)
     {
         $params = http_build_query([
-            'sectionId' => $model->getOwner()->getsection()->id,
+            'sectionId' => $model->getOwner()->getSection()->id,
             'siteId' => $model->ownerSiteId,
             'fieldId' => $model->fieldId,
             'relatedTo' => $options['relatedTo'] ?? null,
