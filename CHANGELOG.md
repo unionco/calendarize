@@ -1,5 +1,13 @@
 # Calendarize Changelog
 
+## 1.2.10 - 2019-04-23
+
+### Added
+New custom validator to prevent calendarize from saving without required sub fields.
+
+### Fixed
+Fixed the week month method to get the accurate week of the month for repeat rules
+
 ## 1.2.9 - 2019-04-22
 
 ### Added
