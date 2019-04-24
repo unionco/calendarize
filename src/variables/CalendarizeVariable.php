@@ -11,6 +11,7 @@
 namespace unionco\calendarize\variables;
 
 use Craft;
+use craft\i18n\Locale;
 use unionco\calendarize\Calendarize;
 
 /**
@@ -22,6 +23,28 @@ class CalendarizeVariable
 {
     // Public Methods
     // =========================================================================
+
+    /**
+     * Returns all of the localized day of the week names in value label array
+     *
+     * @param string|null $length The format length that should be returned. Values: Locale::LENGTH_ABBREVIATED, ::MEDIUM, ::FULL
+     * @return array The localized day array
+     */
+    public function getWeekDayNames($length = null)
+    {
+        if (!$length) {
+            $length = Locale::LENGTH_ABBREVIATED;
+        }
+        
+        $days = [];
+        $daysOfWeek = Craft::$app->getLocale()->getWeekDayNames($length);
+        
+        foreach ($daysOfWeek as $key => $day) {
+            $days[] = ["value" => $key, "label" => $day];
+        }
+        
+        return $days;
+    }
 
     /**
      * Get week month text

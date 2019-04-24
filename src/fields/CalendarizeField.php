@@ -11,12 +11,14 @@
 namespace unionco\calendarize\fields;
 
 use Craft;
-use craft\base\ElementInterface;
+use craft\i18n\Locale;
+use craft\base\Element;
 use craft\base\Field;
+use craft\base\ElementInterface;
+use unionco\calendarize\Calendarize;
 use craft\base\PreviewableFieldInterface;
 use craft\elements\db\ElementQueryInterface;
 use unionco\calendarize\assetbundles\fieldbundle\FieldAssetBundle;
-use unionco\calendarize\Calendarize;
 
 /**
  * @author    Franco Valdes
@@ -111,9 +113,23 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     public function rules()
     {
         $rules = parent::rules();
+        $rules[] = [
+            ['startDate', 'endDate'], 
+            'required'
+        ];
 
         return $rules;
     }
+
+    /**
+	 * @inheritdoc
+	 */
+	public function getElementValidationRules(): array
+	{
+		return [
+			[CalendarizeValidator::class, 'on' => Element::SCENARIO_LIVE],
+		];
+	}
 
     /**
      * @inheritdoc
@@ -182,9 +198,11 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
         // Get our id and namespace
         $id = $view->formatInputId($this->handle);
         $namespacedId = $view->namespaceInputId($id);
+        $locale = Craft::$app->getLocale()->id;
+        $dateFormat = Craft::$app->getLocale()->getDateFormat(Locale::LENGTH_MEDIUM);
 
         $view->registerAssetBundle(FieldAssetBundle::class);
-        $view->registerJs("new Calendarize('{$namespacedId}');");
+        $view->registerJs("new Calendarize('{$namespacedId}', '{$locale}', '{$dateFormat}');");
 
         // Render the input template
         return $view->renderTemplate(

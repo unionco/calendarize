@@ -15,16 +15,7 @@
 
 {% import "calendarize/_includes/forms" as forms %}
 
-{% set daysOfWeek = [
-    { value: 0, label: 'Sun'|t("calendarize") },
-    { value: 1, label: 'Mon'|t("calendarize") },
-    { value: 2, label: 'Tue'|t("calendarize") },
-    { value: 3, label: 'Wed'|t("calendarize") },
-    { value: 4, label: 'Thu'|t("calendarize") },
-    { value: 5, label: 'Fri'|t("calendarize") },
-    { value: 6, label: 'Sat'|t("calendarize") },
-] %}
-
+{% set daysOfWeek = craft.calendarize.getWeekDayNames %}
 {% set endOptions = [
     { value: 'never', label: 'Never'|t("calendarize") },
     { value: 'date', label: 'On Date'|t("calendarize") }
