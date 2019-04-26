@@ -1,5 +1,10 @@
 # Calendarize Changelog
 
+## 1.2.11 - 2019-04-23
+
+### Fixed
+Fixed field validation issue not allowing users to add a new calendarize field
+
 ## 1.2.10 - 2019-04-23
 
 ### Added
