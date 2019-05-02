@@ -1,5 +1,14 @@
 # Calendarize Changelog
 
+## 1.2.12 - 2019-05-02
+
+### Added
+Ability to access end date of next occurrence [#6](https://github.com/unionco/calendarize/issues/6)
+Updated README to show new changes.
+
+### Updated
+Removed unused use statements
+
 ## 1.2.11 - 2019-04-23
 
 ### Fixed

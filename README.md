@@ -64,6 +64,10 @@ There are two ways to use the calendarize field in your templates.
             {{ event.calendarizeHandle.readable }} // string see rrule for more information
             {{ event.calendarizeHandle.getIcsUrl }} // url to ics controller action for a single eevent
             {{ event.calendarizeHandle.getCalendarIcsUrl }} // url to ics controller action for all events in the section
+
+            // new as of 1.2.12
+            {{ event.calendarizeHandle.next.start|date('Y-m-d') }} // next occurrence start date
+            {{ event.calendarizeHandle.next.end|date('Y-m-d') }} // next occurrence end date
         {% endfor %}
 
 - There is also a few added methods to help get all occurrences for repeating entries. These helpers will return an array of `Occurrence` models.
@@ -82,7 +86,7 @@ There are two ways to use the calendarize field in your templates.
         {% set monthEnd = '2022-01-31' %}
         {% set occurrences = craft.calendarize.between(monthStart, monthEnd, { section: ['liveShows'] }) %}
         {% for occurrence in occurrences %}
-            {{ occurrence.title }} @ {{ occurrence.next | date('Y-m-d') }}
+            {{ occurrence.title }} @ {{ occurrence.start | date('Y-m-d h:i a') }} - {{ occurrence.end | date('Y-m-d h:i a') }}
         {% endfor %}
 
 ### Other Examples:
@@ -145,7 +149,7 @@ There are two ways to use the calendarize field in your templates.
 - Public Methods
     - `getOwner(): Element`
     - `ends(): bool`
-    - `next(): DateTime`
+    - `next(): Occurrence`
     - `getOccurrences($limit = 10): Occurrence[]`
     - `getOccurrencesBetween($startDate, $endDate = null, $limit = 1): Occurrence[]`
     - `hasPassed(): bool`
@@ -157,8 +161,10 @@ There are two ways to use the calendarize field in your templates.
 ### Occurrence Model
 
 - Public Properties
-    - element
-    - next
+    - Element element
+    - DateTime next
+    - DateTime start
+    - DateTime end
 - Public Methods
     - `getType(): string`
 

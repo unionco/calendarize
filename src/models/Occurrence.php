@@ -11,9 +11,9 @@
 namespace unionco\calendarize\models;
 
 use Craft;
-use craft\base\Element;
 use DateTime;
 use ReflectionClass;
+use craft\base\Element;
 
 class Occurrence
 {
@@ -31,12 +31,29 @@ class Occurrence
     public $next;
 
     /**
+     * @var string
+     */
+    public $start;
+
+    /**
+     * @var string
+     */
+    public $end;
+
+    /**
      * 
      */
-    public function __construct(Element $element, DateTime $next)
+    public function __construct(Element $element, DateTime $next, int $diff)
     {
         $this->element = $element;
         $this->next = $next;
+
+        // start and end date
+        $this->start = $next;
+        
+        // end date
+        $end = clone $next;
+        $this->end = $end->modify($diff . ' seconds');
     }
 
     /**
