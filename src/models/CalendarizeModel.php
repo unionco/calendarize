@@ -107,6 +107,11 @@ class CalendarizeModel extends Model
             }
         }
 
+        // Need to enforce an end date
+        if (!isset($this->endDate) || empty($this->endDate) || !$this->endDate instanceof \DateTime) {
+            $this->endDate = $this->startDate;
+        }
+
         $this->owner = $owner;
 		parent::__construct($config);
     }
@@ -160,7 +165,7 @@ class CalendarizeModel extends Model
      */
     public function next()
     {
-        if (empty($this->startDate) && empty($this->endDate)) {
+        if (empty($this->startDate) || empty($this->endDate)) {
             return false;
         }
 
@@ -212,7 +217,7 @@ class CalendarizeModel extends Model
      */
     public function getOccurrences($limit = 10)
     {
-        if (empty($this->startDate) && empty($this->endDate)) {
+        if (empty($this->startDate) || empty($this->endDate)) {
             return [];
         }
 
@@ -236,7 +241,7 @@ class CalendarizeModel extends Model
      */
     public function getOccurrencesBetween($startDate, $endDate = null, $limit = 1)
     {
-        if (empty($this->startDate) && empty($this->endDate)) {
+        if (empty($this->startDate) || empty($this->endDate)) {
             return [];
         }
 
@@ -265,7 +270,7 @@ class CalendarizeModel extends Model
      */
     public function hasPassed()
     {
-        if (empty($this->startDate) && empty($this->endDate)) {
+        if (empty($this->startDate) || empty($this->endDate)) {
             return false;
         }
 
