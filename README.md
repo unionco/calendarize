@@ -61,7 +61,8 @@ There are two ways to use the calendarize field in your templates.
             {{ event.calendarizeHandle.allDay }} // boolean all day entry
             {{ event.calendarizeHandle.repeatType }} // string type of repeat
             {{ event.calendarizeHandle.hasPassed }} // boolean if entry next occurrence has passed
-            {{ event.calendarizeHandle.readable }} // string see rrule for more information
+            {{ event.calendarizeHandle.readable }} // string containing a basic human readable description of the
+            recurrence rule. See https://github.com/rlanvin/php-rrule/wiki/RRule for more information
             {{ event.calendarizeHandle.getIcsUrl }} // url to ics controller action for a single eevent
             {{ event.calendarizeHandle.getCalendarIcsUrl }} // url to ics controller action for all events in the section
 
