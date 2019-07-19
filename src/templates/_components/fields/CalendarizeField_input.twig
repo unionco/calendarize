@@ -55,7 +55,7 @@
                 }}
             </div>
             <div class="calendar-row-item">
-                <span class="label u-bold">to</span>
+                <span class="label u-bold">{{'to'|t("calendarize")}}</span>
             </div>
             <div class="calendar-row-item">
                 {{ 
@@ -139,7 +139,7 @@
         <div class="calendar-row" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="field">
                 <div class="heading">
-                    <label>Ends Repeat</label>
+                    <label>{{'Ends Repeat'|t("calendarize")}}</label>
                 </div>
 
                 <div class="calendar-row">
@@ -224,7 +224,7 @@
     {% if value is defined and value.startDate %}
         <div class="calendar-data">
             <p>
-                {% if value.hasPassed %}Date:{% else %}Next Occurrence:{% endif %} 
+                {% if value.hasPassed %}{{'Date'|t("calendarize")}}:{% else %}{{'Next Occurrence'|t("calendarize")}}:{% endif %}
                 {% if value.allDay %}
                     <b>{{ value.next.format('m/d/Y') }}</b>
                 {% else %}

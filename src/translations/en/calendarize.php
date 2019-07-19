@@ -22,6 +22,7 @@ return [
     'Thu' => 'Thu',
     'Fri' => 'Fri',
     'Sat' => 'Sat',
+    'to' => 'to',
     'Never' => 'Never',
     'On Date' => 'On Date',
     'Daily' => 'Daily',
@@ -33,9 +34,11 @@ return [
     'Repeats' => 'Repeats',
     'Every' => 'Every',
     'Every month on the' => 'Every month on the',
+    'Ends Repeat' => 'Ends Repeat',
     'Date Exceptions' => 'Date Exceptions',
     'Time Exceptions' => 'Time Exceptions',
     'Occurrences' => 'Occurrences',
     'Last Occurrence' => 'Last Occurrence',
-    'Next Occurrence' => 'Next Occurrence'
+    'Next Occurrence' => 'Next Occurrence',
+    'Date' => 'Date'
 ];
