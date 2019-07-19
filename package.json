@@ -6,6 +6,7 @@
   "dependencies": {
     "@union/cli": "^0.9.6",
     "axios": "^0.19.0",
+    "fstream": "^1.0.12",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "lodash.mergewith": "^4.6.2",
