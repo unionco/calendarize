@@ -1,6 +1,6 @@
 # Craft SyncDB
 
-<img src="./resources/img/calendarize.png" style="max-width: 600px; width: 100%;">
+<img src="./resources/img/calendarize-logo.png" style="max-width: 600px; width: 100%;">
 
 ## Overview
 
