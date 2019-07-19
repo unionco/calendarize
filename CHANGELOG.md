@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.14 - 2019-06-24
+### Updated
+- Updated Docs
+- Updated logo and icon
+- Merged PR [#33](https://github.com/unionco/calendarize/pull/33)
+- Merged PR [#31]https://github.com/unionco/calendarize/pull/31)
+
 ## 1.2.13 - 2019-06-24
 ### Fixed
 - Enforcing the end date value. Fixes an error when no end date is provided. Will now default to the start date.
