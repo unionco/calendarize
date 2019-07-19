@@ -5,6 +5,7 @@
   "description": "",
   "dependencies": {
     "@union/cli": "^0.9.6",
+    "lodash": "^4.17.15",
     "moment": "^2.23.0"
   },
   "devDependencies": {
