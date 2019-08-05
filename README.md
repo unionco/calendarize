@@ -1,4 +1,4 @@
-# Craft SyncDB
+# Calendarize
 
 <img src="./resources/img/calendarize-logo.png" style="max-width: 600px; width: 100%;">
 
