@@ -41,7 +41,7 @@ class Occurrence
     public $end;
 
     /**
-     * 
+     *
      */
     public function __construct(Element $element, DateTime $next, int $diff)
     {
@@ -50,7 +50,7 @@ class Occurrence
 
         // start and end date
         $this->start = $next;
-        
+
         // end date
         $end = clone $next;
         $this->end = $end->modify($diff . ' seconds');
@@ -61,7 +61,7 @@ class Occurrence
      */
     public function __call($name, $args = [])
     {
-        // backwards compatibility 
+        // backwards compatibility
         if (in_array($name, get_class_methods(DateTime::class))) {
             return $this->next->{$name}(...$args);
         }
@@ -74,7 +74,7 @@ class Occurrence
     }
 
     /**
-     * 
+     *
      */
     public function __toString()
     {
@@ -82,7 +82,7 @@ class Occurrence
     }
 
     /**
-     * 
+     *
      */
     public function getType(): string
     {

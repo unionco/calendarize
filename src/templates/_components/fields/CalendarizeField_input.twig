@@ -33,7 +33,7 @@
     <div class="calendar-fields">
         <div class="calendar-row">
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.lightswitchField({
                         label: 'All Day'|t("calendarize"),
                         id: name ~ '-allDay',
@@ -45,12 +45,13 @@
                 }}
             </div>
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.dateTimeField({
                         id: name ~ '-startDate',
                         name: name ~ '[startDate]',
                         value: ( value is not null and value.startDate ? value.startDate : null ),
-                        parent: namespacedId ~ '-allDay'
+                        parent: namespacedId ~ '-allDay',
+                        minuteIncrement: 15
                     })
                 }}
             </div>
@@ -58,19 +59,20 @@
                 <span class="label u-bold">{{'to'|t("calendarize")}}</span>
             </div>
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.dateTimeField({
                         id: name ~ '-endDate',
                         name: name ~ '[endDate]',
                         value: ( value is not null and value.endDate ? value.endDate : null ),
-                        parent: namespacedId ~ '-allDay'
+                        parent: namespacedId ~ '-allDay',
+                        minuteIncrement: 15
                     })
                 }}
             </div>
         </div>
         <div class="calendar-row u-alignStart">
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.lightswitchField({
                         label: 'Repeats'|t("calendarize"),
                         id: name ~ '-repeats',
@@ -82,7 +84,7 @@
             </div>
 
             <div class="calendar-row-item" data-if="{{ namespacedId }}-repeats" data-if-value="1">
-                {{ 
+                {{
                     forms.selectField({
                         id: name ~ '-repeatType',
                         label: 'Every'|t("calendarize"),
@@ -107,7 +109,7 @@
                                 {% set selected = true %}
                             {% endif %}
                         {% endif %}
-                        
+
                         <div class="day" id="fields-calendarDays-field">
                             <label for="{{labelId}}">
                                 <input type="checkbox" id="{{labelId}}" name="{{ fieldName }}" {% if selected -%}checked{%- endif %}/>
@@ -123,7 +125,7 @@
                         { value: 'onDay', label: value.startDate ? value.startDate.format('jS') },
                         { value: 'onMonthDay', label: craft.calendarize.weekMonthText(value.startDate ?? now) }
                     ] %}
-                    {{ 
+                    {{
                         forms.selectField({
                             id: name ~ 'Months',
                             label: 'Every month on the'|t("calendarize"),
@@ -144,7 +146,7 @@
 
                 <div class="calendar-row">
                     <div class="calendar-row-item">
-                        {{ 
+                        {{
                             forms.selectField({
                                 id: name ~ '-endRepeat',
                                 name: name ~ '[endRepeat]',
@@ -154,7 +156,7 @@
                         }}
                     </div>
                     <div class="calendar-row-item" data-if="{{ namespacedId }}-endRepeat" data-if-value="date">
-                        {{ 
+                        {{
                             forms.dateField({
                                 id: name ~ 'EndRepeatDate',
                                 name: name ~ '[endRepeatDate]',
@@ -168,7 +170,7 @@
 
         <div class="calendar-row calendar-row-column" data-exceptions="fields[{{ name }}][exceptions][][date]" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.dateField({
                         label: 'Date Exceptions'|t("calendarize"),
                         id: name ~ 'Exceptions',
@@ -194,13 +196,14 @@
 
         <div class="calendar-row calendar-row-column" data-time-exceptions="fields[{{ name }}][timeChanges][][date]" data-if="{{ namespacedId }}-repeats" data-if-value="1">
             <div class="calendar-row-item">
-                {{ 
+                {{
                     forms.dateTimeField({
                         label: 'Time Exceptions'|t("calendarize"),
                         id: name ~ 'TimeChanges',
                         name: name ~ '[timeChanges]',
                         value: null,
-                        timeException: true
+                        timeException: true,
+                        minuteIncrement: 15
                     })
                 }}
             </div>
