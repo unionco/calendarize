@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.16 - 2019-08-29
+### Updated
+- Updating wording around the repeat frequency closes [#28](https://github.com/unionco/calendarize/issues/28)
+- Updating minute increment to 15 instead of 30. Will move this into a field setting in next update [#30](https://github.com/unionco/calendarize/issues/30)
+
 ## 1.2.15 - 2019-06-24
 ### Updated
 - Updating deps due to vulnerability report from github
@@ -54,7 +59,7 @@ Cleaned up use blocks to remove used classes
 - Fixing up the docs (#18)[https://github.com/unionco/calendarize/issues/18]
 
 ## 1.2.6 - 2019-02-17
-### Added 
+### Added
 - Craft translate methods to cp templates to allow for locale translations (#4)[https://github.com/unionco/calendarize/issues/4]
 - ICS url helper method to get the controller action to create a downloadable calendar file
 - ICS controller action downloads a .ics file
@@ -72,7 +77,7 @@ Cleaned up use blocks to remove used classes
 
 ## 1.2.3 - 2019-02-12
 ### Fixed
-- Fixed future occurrences from showing up in `between` date method. 
+- Fixed future occurrences from showing up in `between` date method.
 
 ## 1.2.2 - 2019-02-11
 ### Fixed
@@ -85,7 +90,7 @@ Cleaned up use blocks to remove used classes
 ## 1.2.0 - 2019-02-11
 ### Added
 - New variable `between` to allow query to find occurrences between two dates. Similar to the `after` method but restricting an end date as well.
-- New `Occurence` model to more easily sort occurrences and access the `next` property. On the twig side, this new change is backwards compatible so no changes needed. 
+- New `Occurence` model to more easily sort occurrences and access the `next` property. On the twig side, this new change is backwards compatible so no changes needed.
 
 ### Updated
 - Updated javascript to allow for multiple calendarize fields on the page and also in efforts to support matrix usage soon.
@@ -101,7 +106,7 @@ Cleaned up use blocks to remove used classes
 
 ## Fixed
 - Upcoming entries still showing non repeating past events
-- RRULE usage when entry does not repeat is no longer possible 
+- RRULE usage when entry does not repeat is no longer possible
 
 ## 1.1.13 - 2019-01-24
 ### Added
@@ -109,7 +114,7 @@ Cleaned up use blocks to remove used classes
 - Order parameter to `craft.calendarize.after` method
 
 ### Fixed
-- Upcoming entries query 
+- Upcoming entries query
 
 ## 1.1.9 - 2019-01-19
 ### Added
