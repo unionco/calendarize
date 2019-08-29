@@ -2,9 +2,7 @@
 
 namespace unionco\calendarize\migrations;
 
-use Craft;
 use craft\db\Migration;
-use craft\helpers\Json;
 use unionco\calendarize\records\CalendarizeRecord;
 
 /**
@@ -20,7 +18,7 @@ class m190129_225213_updateValues extends Migration
         // Place migration code here...
         $records = CalendarizeRecord::find()
             ->all();
-        
+
         if (count($records)) {
             foreach ($records as $record) {
                 if (!$record->repeats) {

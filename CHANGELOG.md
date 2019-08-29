@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.2.15 - 2019-06-24
+### Updated
+- Updating deps due to vulnerability report from github
+
 ## 1.2.14 - 2019-06-24
 ### Updated
 - Updated Docs
