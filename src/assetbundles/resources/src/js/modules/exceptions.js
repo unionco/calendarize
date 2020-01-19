@@ -24,7 +24,7 @@ class CalendarException {
         if (withTime) {
             this.timeField = node.querySelector('.ui-timepicker-input');
             this.trigger = node.querySelector('[data-trigger]');
-            
+
             const datetimewrapper = node.querySelector('.datetimewrapper');
             datetimewrapper.querySelectorAll('input').forEach(node => node.removeAttribute('name'));
 
@@ -45,6 +45,16 @@ class CalendarException {
 
     addEventListener(node, action = 'click') {
         node.addEventListener(action, (e) => {
+            if (this.withTime) {
+                if (!this.dateField.value || !this.timeField.value) {
+                    return;
+                }
+            } else {
+                if (!this.dateField.value) {
+                    return;
+                }
+            }
+
             const li = document.createElement('li');
             const p = document.createElement('p');
             const length = this.listing.querySelectorAll('li').length;

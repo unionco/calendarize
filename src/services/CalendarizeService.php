@@ -18,6 +18,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\Entry;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
+use craft\helpers\StringHelper;
 use craft\helpers\Json;
 use DateTime;
 use DateTimeZone;
@@ -329,7 +330,7 @@ class CalendarizeService extends Component
      * @return null
      * @throws Exception
      */
-    public function modifyElementsQuery(ElementQueryInterface $query, $value)
+    public function modifyElementsQuery(CalendarizeField $field, ElementQueryInterface $query, $value)
     {
         if (!$value) return;
         /** @var ElementQuery $query */
@@ -354,6 +355,24 @@ class CalendarizeService extends Component
             "{$tableName} {$tableAlias}",
             $on
         );
+
+        // additional query support
+        if (isset($value['startDate']) && $startDate = $value['startDate']) {
+            $query->subQuery->andWhere(Db::parseDateParam("{$tableAlias}.startDate", $startDate));
+        }
+
+        if (isset($value['endDate']) && $endDate = $value['endDate']) {
+            $query->subQuery->andWhere(Db::parseDateParam("{$tableAlias}.endDate", $endDate));
+        }
+
+        foreach ($query->orderBy as $handle => $dir) {
+            # code...
+            if (StringHelper::startsWith($handle, $field->handle)) {
+                $fixedAlias = str_replace($field->handle, $tableAlias, $handle);
+                $query->query->orderBy([$fixedAlias => $dir]);
+                $query->subQuery->orderBy([$fixedAlias => $dir]);
+            }
+        }
 
         return;
     }

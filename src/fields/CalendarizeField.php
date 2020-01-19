@@ -49,7 +49,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
      * @var boolean
      */
     public $allDay = false;
-    
+
     /**
      * @var array
      */
@@ -103,7 +103,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
 	{
 		return false;
     }
-    
+
     // Public Methods
     // =========================================================================
 
@@ -145,7 +145,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
             return null;
         }
 
-		Calendarize::$plugin->calendar->modifyElementsQuery($query, $value);
+		Calendarize::$plugin->calendar->modifyElementsQuery($this, $query, $value);
 
 		return null;
     }
@@ -167,17 +167,13 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
         if (empty($value->startDate) && empty($value->endDate)) {
             return '-';
         }
-        
+
+        $formatter = Craft::$app->getFormatter();
         $hr = $value->readable(['locale' => Craft::$app->locale->id]);
         $html = "<span title=\"{$hr}\">";
-        
-        if ($value->hasPassed()) {
-            $html .= "<b>" . Craft::t('calendarize', 'Last Occurrence') . ":</b>";
-        } else {
-            $html .= "<b>" . Craft::t('calendarize', 'Next Occurrence') . ":</b>";
-        }
 
-        $html .= "<br/>" . $value->next()->format('l, m/d/Y @ h:i:s a');
+        $html .= $formatter->asDatetime($value->next()->format('U'), Locale::LENGTH_LONG);
+        $html .= "<br/><span style=\"text-transform: capitalize\">" . $hr . "</span></span>";
 
         return $html;
     }
