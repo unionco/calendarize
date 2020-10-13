@@ -14,6 +14,9 @@ export const getDayName = (date) => {
     return days[d.getDay()];
 };
 
+export const getLocalizedDayName = (mom) => {
+    return mom.format('dddd');
+};
 export const weekOfMonth = (date) => {
     const m = moment(date);
     let w = m.isoWeekday(7).week() - moment(m).startOf('month').isoWeekday(7).week() - 1;

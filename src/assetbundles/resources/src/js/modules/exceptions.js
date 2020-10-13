@@ -1,6 +1,4 @@
-import {
-    getDayName
-} from '../util/helpers';
+import { getLocalizeMoment, getLocalizedDayName } from '../util/helpers';
 
 // helper method
 const removeChild = (item, child) => {
@@ -54,10 +52,12 @@ class CalendarException {
             close.setAttribute('data-icon', 'remove');
             close.addEventListener('click', () => {
                 removeChild(this.listing, li);
-            })
+            });
 
             // create base inputs
-            const newValue = this.dateField.value;
+            const localizedMoment = getLocalizeMoment(this.dateField.value);
+            let newValue = localizedMoment.format('D/M/Y');
+
             const name = this.hiddenName;
             const position = name.indexOf('[date]');
             const newFieldName = [name.slice(0, position), `[${length || 0}]`, name.slice(position)].join('');
@@ -65,7 +65,7 @@ class CalendarException {
             const hidden = this.createInput(newFieldName, 'hidden', newValue);
             const timezone = this.createInput(newFieldName.replace('date', 'timezone'), 'hidden', Craft.timezone);
 
-            p.innerHTML = getDayName(newValue) + ', ' + newValue;
+            p.innerHTML = getLocalizedDayName(localizedMoment) + ', ' + localizedMoment.format('L');
 
             li.appendChild(close);
             li.appendChild(hidden);
