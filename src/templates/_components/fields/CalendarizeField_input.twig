@@ -184,9 +184,10 @@
                     {% if value.exceptions is defined %}
                         {% for key, exception in value.exceptions %}
                             <li>
-                                <div data-icon="remove"></div><p>{{ exception | date('l, m/d/Y') }}</p>
-                                <input type="hidden" name="{{name}}[exceptions][{{key}}][date]" value="{{ exception | date('m/d/Y') }}" />
-                                <input type="hidden" name="{{name}}[exceptions][{{key}}][timezone]" value="{{ craft.app.getTimeZone() }}">
+                                <div data-icon="remove"></div>
+                                <p>{{ exception | date('l, d/m/Y') }}</p>
+                                <input type="hidden" name="{{ name }}[exceptions][{{ key }}][date]" value="{{ exception | date('short') }}"/>
+                                <input type="hidden" name="{{ name }}[exceptions][{{ key }}][timezone]" value="{{ craft.app.getTimeZone() }}"/>
                             </li>
                         {% endfor %}
                     {% endif %}
