@@ -37,7 +37,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['make-ics', 'make-section-ics'];
+    protected array|int|bool $allowAnonymous = ['make-ics', 'make-section-ics'];
 
     // Public Methods
     // =========================================================================

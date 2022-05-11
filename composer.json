@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0-RC1",
+        "craftcms/cms": "^4.0",
         "rlanvin/php-rrule": "~1.6.0"
     },
     "autoload": {
@@ -35,5 +35,16 @@
         "documentationUrl": "https://github.com/unionco/calendarize/blob/master/README.md",
         "changelogUrl": "https://raw.githubusercontent.com/unionco/calendarize/master/CHANGELOG.md",
         "class": "unionco\\calendarize\\Calendarize"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "craftcms/rector": "dev-main"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }

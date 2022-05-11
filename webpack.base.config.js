@@ -17,7 +17,7 @@ const postcssPlugins = function (loader) {
                 return new Promise((resolve, reject) => {
                     let hadTilde = false;
                     if (url && url.startsWith('~')) {
-                        url = url.substr(1);
+                        url = url.substring(1);
                         hadTilde = true;
                     }
                     loader.resolve(context, (hadTilde ? '' : './') + url, (err, result) => {
