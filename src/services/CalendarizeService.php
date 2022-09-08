@@ -105,7 +105,7 @@ class CalendarizeService extends Component
         $allOccurrences = [];
 
         foreach ($entries as $key => $entry) {
-            $fields = $entry->getFieldLayout()->getFields();
+            $fields = $entry->getFieldLayout()->getCustomFields();
             $fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) {
                 return get_class($field);
             }, $fields));
@@ -161,7 +161,7 @@ class CalendarizeService extends Component
         $allOccurrences = [];
 
         foreach ($entries as $key => $entry) {
-            $fields = $entry->getFieldLayout()->getFields();
+            $fields = $entry->getFieldLayout()->getCustomFields();
             $fieldIndex = array_search(CalendarizeField::class, array_map(function ($field) {
                 return get_class($field);
             }, $fields));
