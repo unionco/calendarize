@@ -110,7 +110,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         return $rules;
@@ -129,7 +129,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
     {
         return Calendarize::$plugin->calendar->getField($this, $element, $value);
     }
@@ -137,23 +137,23 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
 	 * @inheritdoc
 	 */
-	public function modifyElementsQuery(ElementQueryInterface $query, $value)
+	public function modifyElementsQuery(ElementQueryInterface $query, mixed $value): void
 	{
 		// For whatever reason, this function can be
 		// run BEFORE Calendarize has been initialized
 		if (!Calendarize::$plugin) {
-            return null;
+            return;
         }
 
 		Calendarize::$plugin->calendar->modifyElementsQuery($query, $value);
 
-		return null;
+		return;
     }
 
     /**
 	 * @inheritdoc
 	 */
-	public function afterElementSave(ElementInterface $element, bool $isNew)
+	public function afterElementSave(ElementInterface $element, bool $isNew): void
 	{
 		Calendarize::$plugin->calendar->saveField($this, $element);
 		parent::afterElementSave($element, $isNew);
@@ -162,7 +162,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function getTableAttributeHtml($value, ElementInterface $element): string
+    public function getTableAttributeHtml(mixed $value, ElementInterface $element): string
     {
         if (empty($value->startDate) && empty($value->endDate)) {
             return '-';
@@ -185,7 +185,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
     /**
      * @inheritdoc
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string
     {
         // Register our asset bundle
         $view = Craft::$app->getView();

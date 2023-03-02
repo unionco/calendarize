@@ -394,9 +394,9 @@ class CalendarizeModel extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
-        parent::rules();
+        return parent::rules();
     }
 
     // Private Methods
