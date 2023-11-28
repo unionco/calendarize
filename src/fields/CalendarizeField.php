@@ -197,7 +197,7 @@ class CalendarizeField extends Field implements PreviewableFieldInterface
         $dateFormat = Craft::$app->getLocale()->getDateFormat(Locale::LENGTH_MEDIUM);
 
         $view->registerAssetBundle(FieldAssetBundle::class);
-        $view->registerJs("new Calendarize('{$namespacedId}', '{$locale}', '{$dateFormat}');");
+        $view->registerJs("new Calendarize('{$namespacedId}', '{$locale}', \"{$dateFormat}\");");
 
         // Render the input template
         return $view->renderTemplate(
