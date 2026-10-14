@@ -415,6 +415,9 @@ class CalendarizeModel extends Model
             foreach ($occurrences as $key => $occurrence) {
                 // find in occurrences
                 $change = array_filter($this->timeChanges, function ($change) use ($occurrence) {
+                    if ($change === null) {
+                        return false;
+                    }
                     return $change->format('Y-m-d') === $occurrence->format('Y-m-d');
                 });
                 if ($change) {
